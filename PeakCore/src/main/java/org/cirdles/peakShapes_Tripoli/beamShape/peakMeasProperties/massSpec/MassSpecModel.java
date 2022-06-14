@@ -8,18 +8,6 @@ public class MassSpecModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 123455665660201L;
 
-    private int collectorWidthMM;
-
-    private int theoreticalBeamWidthMM;
-
-    private int effectiveRadiusMagnetMM;
-
-    private String[] faradayNames;
-
-    private String[] ionCounterNames;
-
-    private int amplifierResistance;
-
     private String massSpecName;
 
 
@@ -29,4 +17,12 @@ public class MassSpecModel implements Serializable {
     }
 
 
+    public static  MassSpecModel initializeMassSpec(String name){
+        return new MassSpecModel(name);
+    }
+
+
+    public String getMassSpecName() {
+        return massSpecName;
+    }
 }
