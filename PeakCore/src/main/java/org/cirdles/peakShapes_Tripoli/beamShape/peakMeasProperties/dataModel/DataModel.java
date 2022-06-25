@@ -1,7 +1,21 @@
 package org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.dataModel;
 
+import java.nio.file.Path;
+
 public class DataModel {
-    /*
+
+    private double[][] magnetMasses;        // vector of masses for intensity measurements
+    private double[][] measPeakIntensity;   // vector of corresponding peak intensities
+    private double peakCenterMass;          // mass at center of peak from header
+    private double integPeriodMS ;          // integration period of measurements in ms
+    private String MassID;                  // name of peak getting centered e.g. "205Pb"
+    private String detectorName;            // name of detector as string e.g. "L2"
+    private double collectorWidthAMU;       // width of collector aperture in AMU at center mass
+    private double theoreticalBeamWidthAMU; // width of beam in AMU at center mass
+
+
+    public DataModel(Path inputFile){
+        /*
     function data = dataModel(filename)
             %DATAMODEL Construct an instance of this class
             %   Detailed explanation goes here
@@ -24,4 +38,6 @@ public class DataModel {
             data.detectorName = strtrim(extractAfter(header(2), ","));
 
      */
+    }
+
 }
