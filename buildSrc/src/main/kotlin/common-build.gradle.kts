@@ -22,6 +22,10 @@ repositories {
 dependencies {
     // https://mvnrepository.com/artifact/org.jetbrains/annotations
     implementation("org.jetbrains:annotations:23.0.0") //group: 'org.jetbrains', name: 'annotations', version: '23.0.0'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-math3
+    implementation("org.apache.commons:commons-math3:3.6.1")
+
+
 
 }
 
