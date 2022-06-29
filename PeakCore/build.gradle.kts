@@ -1,5 +1,6 @@
 import Common_build_gradle.Versions.junitVersion
-plugins{
+
+plugins {
     id("common-build")
 }
 

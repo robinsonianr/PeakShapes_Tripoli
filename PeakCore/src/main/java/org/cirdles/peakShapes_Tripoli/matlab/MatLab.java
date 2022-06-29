@@ -367,12 +367,13 @@ public class MatLab {
     }
 
     // matlab linspace
-    public double[][] linspace(double min, double max, int points) {
-        double[][] d = new double[1][points];
+    public double[][] linspace(double min, double max, double points) {
+        double[][] d = new double[1][(int) points];
         for (int i = 0; i < points; i++) {
             d[0][i] = min + i * (max - min) / (points - 1);
         }
         return d;
     }
+
 
 }

@@ -15,6 +15,13 @@ public class SplineBasisModel {
     private final double[][] BSplineMatrix;
 
 
+    private SplineBasisModel() {
+        this.x = null;
+        this.basisDegree = 0;
+        this.numSegments = 0;
+        this.BSplineMatrix = null;
+    }
+
     private SplineBasisModel(double[][] x, int numSegments, int basisDegree) {
         this.x = x;
         this.basisDegree = basisDegree;
@@ -25,6 +32,10 @@ public class SplineBasisModel {
 
     public static SplineBasisModel initializeSpline(double[][] x, int numSegments, int basisDegree) {
         return new SplineBasisModel(x, numSegments, basisDegree);
+    }
+
+    public static SplineBasisModel initializeSpline() {
+        return new SplineBasisModel();
     }
 
 
@@ -90,7 +101,7 @@ public class SplineBasisModel {
         return base;
     }
 
-    public double[][] bBase(double[][] x, int xl, int xr, int numSegments, int basisDegree) {
+    public double[][] bBase(double[][] x, double xl, double xr, double numSegments, int basisDegree) {
         MatLab matLab = new MatLab();
         double[][] base;
         double[][] X, X2, sk, SK, T, P, D, MASK;
