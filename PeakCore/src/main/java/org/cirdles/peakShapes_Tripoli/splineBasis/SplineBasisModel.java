@@ -1,19 +1,21 @@
 package org.cirdles.peakShapes_Tripoli.splineBasis;
 
-import java.util.Arrays;
+
+import org.apache.commons.math3.special.Gamma;
+import org.cirdles.peakShapes_Tripoli.matlab.MatLab;
 
 public class SplineBasisModel {
 
-    private double[][] x; // vector of x values
+    private final double[][] x; // vector of x values
 
-    private double basisDegree;
+    private final double basisDegree;
 
-    private double numSegments;
+    private final double numSegments;
 
-    private double[][] BSplineMatrix;
+    private final double[][] BSplineMatrix;
 
 
-    private SplineBasisModel(double[][] x, int basisDegree, int numSegments){
+    private SplineBasisModel(double[][] x, int numSegments, int basisDegree) {
         this.x = x;
         this.basisDegree = basisDegree;
         this.numSegments = numSegments;
@@ -21,151 +23,120 @@ public class SplineBasisModel {
     }
 
 
-
-    public static SplineBasisModel initializeSpline(double[][] x, int basisDegree, int numSegments){
-            return new SplineBasisModel(x, basisDegree, numSegments);
+    public static SplineBasisModel initializeSpline(double[][] x, int numSegments, int basisDegree) {
+        return new SplineBasisModel(x, numSegments, basisDegree);
     }
 
 
+    public double[][] bBase(double[][] x, int numSegments, int basisDegree) {
+        /*
+            x = x(:);
+            xl = x(1);
+            xr = x(end);
 
+            % Compute the B-splines
+            dx = (xr-xl)/nseg;
+            knots = linspace(xl-bdeg*dx, xr+bdeg*dx, nseg+2*bdeg+1); % xl-bdeg*dx:dx:x4+bdeg*dx;
 
-    public double[][] bBase(double[][] x, int numSegments, int basisDegree){
-        double[][] base = new double[x.length][numSegments+basisDegree];
+            nx = length(x);
+            nt = length(knots);
+            X = kron(x, ones(1,nt));
+            T = kron(knots, ones(nx,1));
+
+            P = (X - T).^bdeg .* (X >= T); % added = to >= to match de Boor definition?
+            D = diff(eye(nt), bdeg+1)/(gamma(bdeg+1)*dx^bdeg);
+            B = (-1)^(bdeg+1) * P * D';
+
+            % Make B-splines exactly zero beyond their end knots
+            nb = size(B,2);
+            X = kron(x, ones(1,nb));
+            sk = knots((1:nb) + bdeg + 1);
+            SK = kron(sk, ones(nx,1));
+            Mask = X < SK;
+            B = B .* Mask;
+         */
+        MatLab matLab = new MatLab();
+
+        double[][] base;
+        double[][] X, X2, sk, SK, T, P, D, MASK;
         double xLower = x[0][0];
-        double xUpper = x[x.length-1][x[0].length-1];
+        double xUpper = x[x.length - 1][x[0].length - 1];
 
-        double dx = (xUpper-xLower)/numSegments;
-        double[][] knots = {{xLower - (basisDegree*dx)}, {xUpper + (basisDegree*dx)}, {numSegments + (2*basisDegree+1)} };
+        double dx = (xUpper - xLower) / numSegments;
+        double[][] knots = matLab.linspace(xLower - (basisDegree * dx), xUpper + (basisDegree * dx), numSegments + ((2 * basisDegree) + 1));
 
         int nx = x[0].length;
-        int nt = knots.length;
+        int nt = knots[0].length;
 
-        double[][] X = kron(x, ones(1, nt));
-        double[][] T = kron(knots, ones(nx, 1));
+        X = matLab.kron(x, matLab.ones(1, nt));
+        T = matLab.kron(knots, matLab.ones(nx, 1));
 
-        double[][] P = expMatrix(subtract(X,T), basisDegree);
+        P = matLab.multMatrix(matLab.expMatrix(matLab.subtract(X, T), basisDegree), matLab.greatEqual(X, T));
+        D = matLab.divMatrix(matLab.diff(matLab.eye(nt), basisDegree + 1), Gamma.gamma((basisDegree + 1) * (Math.pow(dx, basisDegree))));
+        base = matLab.multMatrix(matLab.multMatrix(P, matLab.transpose(D)), Math.pow(-1, basisDegree + 1));
+        int nb = matLab.size(base, 2);
+        X2 = matLab.kron(x, matLab.ones(1, nb));
+        sk = new double[1][nb];
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < nb; j++) {
+                sk[i][j] = knots[i][j] + (basisDegree + 1);
+            }
+        }
+        SK = matLab.kron(sk, matLab.ones(nx, 1));
+        MASK = matLab.lessThan(X2, SK);
+        base = matLab.multMatrix(base, MASK);
 
 
         return base;
     }
 
-    // Kronecker product of 2 arrays
-    public double[][] kron(double[][] A, double[][] B){
-        int rowA = A.length;
-        int colA = A[0].length;
-        int rowB = B.length;
-        int colB = B[0].length;
+    public double[][] bBase(double[][] x, int xl, int xr, int numSegments, int basisDegree) {
+        MatLab matLab = new MatLab();
+        double[][] base;
+        double[][] X, X2, sk, SK, T, P, D, MASK;
+        double xLower;
+        double xUpper;
 
-        double[][] newKron = new double[rowA*rowB][colA*colB];
-
-            for(int i = 0; i < rowA; i++){
-                for (int j = 0; j < rowB; j++ ){
-                    for (int k = 0; k < colA; k++){
-                        for (int h = 0; h < colB; h++){
-                            newKron[i +j][k+ h ] = A[i][k]*B[j][h];
-                        }
-                    }
-                }
-            }
-
-        return newKron;
-    }
-
-    // Creates matrix of all ones of desired rows and columns
-    public double[][] ones(int rows, int cols){
-        double[][] newOne = new double[rows][cols];
-        for (int i = 0; i < rows; i++){
-            for (int j =0; j < cols; j++){
-                newOne[i][j] = 1;
-            }
+        if (xl > x[0][0]) {
+            xLower = x[0][0];
+        } else {
+            xLower = xl;
         }
 
-        return newOne;
-    }
-
-    public double[][] subtract(double[][] A, double[][] B){
-            int rowSize = Math.min(A.length, B.length);
-            int colSize = Math.min(A[0].length, B[0].length);
-            double[][] C = new double[rowSize][colSize];
-            for (int i = 0; i < rowSize; i++){
-                for (int j =0; j < colSize; j++){
-                    C[i][j] = A[i][j] - B[i][j];
-                }
-            }
-
-            return C;
-    }
-
-    public double[][] expMatrix(double[][] matrix, int deg){
-            int row = matrix.length;
-            int col = matrix[0].length;
-            double[][] mat = new double[row][col];
-
-            for (int i = 0; i < row; i++){
-                for (int j = 0; j < col; j++){
-                    mat[i][j] = Math.pow(matrix[i][j],deg);
-                }
-            }
-
-            return mat;
-    }
-
-    public double[][] multMatrix(double[][] A, double[][] B){
-        int rowA = A.length;
-        int colA = A[0].length;
-        int rowB = B.length;
-        int colB = B[0].length;
-        if(colA == colB && rowA == rowB && rowB == colB){
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++){
-                for (int j = 0; j < colA; j++){
-                    C[i][j] = A[i][j]*B[i][j];
-                    System.out.print(C[i][j] + " ");
-                }
-                System.out.println();
-            }
-            return C;
-        } else if (rowA == 1 && rowA == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++){
-                for (int j = 0; j < colA; j++){
-                    C[i][j] = A[0][j]*B[i][0];
-                    System.out.print(C[i][j] + " ");
-
-                }
-                System.out.println();
-            }
-            return C;
-        } else if (colA == 1 && colA == rowB ) {
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++){
-                for (int j = 0; j < colB; j++){
-                    C[i][j] = A[i][0]*B[0][j];
-                    System.out.print(C[i][j] + " ");
-                }
-                System.out.println();
-            }
-            return C;
-        } else if (colA == rowB) {
-            double sum;
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++){
-                for ( int j = 0; j < colB; j++){
-                    sum =0;
-                    for ( int l = 0; l < rowB; l++){
-                        sum += A[i][l]*B[l][j];
-                    }
-                    C[i][j] = sum;
-                    System.out.print(C[i][j] + " ");
-                }
-                System.out.println();
-            }
-            return C;
+        if (xr < x[x.length - 1][x[0].length - 1]) {
+            xUpper = x[x.length - 1][x[0].length - 1];
+        } else {
+            xUpper = xr;
         }
 
-        return null;
-    }
 
+        double dx = (xUpper - xLower) / numSegments;
+        double[][] knots = matLab.linspace(xLower - (basisDegree * dx), xUpper + (basisDegree * dx), numSegments + ((2 * basisDegree) + 1));
+
+        int nx = x[0].length;
+        int nt = knots[0].length;
+
+        X = matLab.kron(x, matLab.ones(1, nt));
+        T = matLab.kron(knots, matLab.ones(nx, 1));
+
+        P = matLab.multMatrix(matLab.expMatrix(matLab.subtract(X, T), basisDegree), matLab.greatEqual(X, T));
+        D = matLab.divMatrix(matLab.diff(matLab.eye(nt), basisDegree + 1), Gamma.gamma((basisDegree + 1) * (Math.pow(dx, basisDegree))));
+        base = matLab.multMatrix(matLab.multMatrix(P, matLab.transpose(D)), Math.pow(-1, basisDegree + 1));
+        int nb = matLab.size(base, 2);
+        X2 = matLab.kron(x, matLab.ones(1, nb));
+        sk = new double[1][nb];
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < nb; j++) {
+                sk[i][j] = knots[i][j] + (basisDegree + 1);
+            }
+        }
+        SK = matLab.kron(sk, matLab.ones(nx, 1));
+        MASK = matLab.lessThan(X2, SK);
+        base = matLab.multMatrix(base, MASK);
+
+
+        return base;
+    }
 
     public double getBasisDegree() {
         return basisDegree;
