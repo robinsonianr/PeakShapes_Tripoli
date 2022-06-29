@@ -15,9 +15,7 @@ public class SplineBasisModel {
     private final double[][] BSplineMatrix;
 
 
-
-
-    private SplineBasisModel(double[][] x, int numSegments, int basisDegree){
+    private SplineBasisModel(double[][] x, int numSegments, int basisDegree) {
         this.x = x;
         this.basisDegree = basisDegree;
         this.numSegments = numSegments;
@@ -25,15 +23,12 @@ public class SplineBasisModel {
     }
 
 
-
-    public static SplineBasisModel initializeSpline(double[][] x,int numSegments, int basisDegree ){
-            return new SplineBasisModel(x, numSegments, basisDegree);
+    public static SplineBasisModel initializeSpline(double[][] x, int numSegments, int basisDegree) {
+        return new SplineBasisModel(x, numSegments, basisDegree);
     }
 
 
-
-
-    public double[][] bBase(double[][] x, int numSegments, int basisDegree){
+    public double[][] bBase(double[][] x, int numSegments, int basisDegree) {
         /*
             x = x(:);
             xl = x(1);
@@ -65,10 +60,10 @@ public class SplineBasisModel {
         double[][] base;
         double[][] X, X2, sk, SK, T, P, D, MASK;
         double xLower = x[0][0];
-        double xUpper = x[x.length-1][x[0].length-1];
+        double xUpper = x[x.length - 1][x[0].length - 1];
 
-        double dx = (xUpper-xLower)/numSegments;
-        double[][] knots = matLab.linspace(xLower - (basisDegree*dx), xUpper + (basisDegree*dx),numSegments + ((2*basisDegree)+1) );
+        double dx = (xUpper - xLower) / numSegments;
+        double[][] knots = matLab.linspace(xLower - (basisDegree * dx), xUpper + (basisDegree * dx), numSegments + ((2 * basisDegree) + 1));
 
         int nx = x[0].length;
         int nt = knots[0].length;
@@ -76,13 +71,13 @@ public class SplineBasisModel {
         X = matLab.kron(x, matLab.ones(1, nt));
         T = matLab.kron(knots, matLab.ones(nx, 1));
 
-        P = matLab.multMatrix(matLab.expMatrix(matLab.subtract(X,T), basisDegree), matLab.greatEqual(X, T));
-        D = matLab.divMatrix(matLab.diff(matLab.eye(nt), basisDegree+1),Gamma.gamma((basisDegree+1)*(Math.pow(dx, basisDegree))));
-        base =  matLab.multMatrix(matLab.multMatrix(P,matLab.transpose(D)), Math.pow(-1, basisDegree+1));
+        P = matLab.multMatrix(matLab.expMatrix(matLab.subtract(X, T), basisDegree), matLab.greatEqual(X, T));
+        D = matLab.divMatrix(matLab.diff(matLab.eye(nt), basisDegree + 1), Gamma.gamma((basisDegree + 1) * (Math.pow(dx, basisDegree))));
+        base = matLab.multMatrix(matLab.multMatrix(P, matLab.transpose(D)), Math.pow(-1, basisDegree + 1));
         int nb = matLab.size(base, 2);
         X2 = matLab.kron(x, matLab.ones(1, nb));
         sk = new double[1][nb];
-        for (int i = 0; i < 1; i++){
+        for (int i = 0; i < 1; i++) {
             for (int j = 0; j < nb; j++) {
                 sk[i][j] = knots[i][j] + (basisDegree + 1);
             }
@@ -92,35 +87,31 @@ public class SplineBasisModel {
         base = matLab.multMatrix(base, MASK);
 
 
-
-
-
-
         return base;
     }
 
-    public double[][] bBase(double[][] x, int xl, int xr, int numSegments, int basisDegree){
+    public double[][] bBase(double[][] x, int xl, int xr, int numSegments, int basisDegree) {
         MatLab matLab = new MatLab();
         double[][] base;
         double[][] X, X2, sk, SK, T, P, D, MASK;
         double xLower;
         double xUpper;
 
-        if(xl > x[0][0]){
+        if (xl > x[0][0]) {
             xLower = x[0][0];
-        }else {
+        } else {
             xLower = xl;
         }
 
-        if(xr < x[x.length-1][x[0].length-1]){
-            xUpper = x[x.length-1][x[0].length-1];
-        }else {
+        if (xr < x[x.length - 1][x[0].length - 1]) {
+            xUpper = x[x.length - 1][x[0].length - 1];
+        } else {
             xUpper = xr;
         }
 
 
-        double dx = (xUpper-xLower)/numSegments;
-        double[][] knots = matLab.linspace(xLower - (basisDegree*dx), xUpper + (basisDegree*dx),numSegments + ((2*basisDegree)+1) );
+        double dx = (xUpper - xLower) / numSegments;
+        double[][] knots = matLab.linspace(xLower - (basisDegree * dx), xUpper + (basisDegree * dx), numSegments + ((2 * basisDegree) + 1));
 
         int nx = x[0].length;
         int nt = knots[0].length;
@@ -128,13 +119,13 @@ public class SplineBasisModel {
         X = matLab.kron(x, matLab.ones(1, nt));
         T = matLab.kron(knots, matLab.ones(nx, 1));
 
-        P = matLab.multMatrix(matLab.expMatrix(matLab.subtract(X,T), basisDegree), matLab.greatEqual(X, T));
-        D = matLab.divMatrix(matLab.diff(matLab.eye(nt), basisDegree+1),Gamma.gamma((basisDegree+1)*(Math.pow(dx, basisDegree))));
-        base =  matLab.multMatrix(matLab.multMatrix(P,matLab.transpose(D)), Math.pow(-1, basisDegree+1));
+        P = matLab.multMatrix(matLab.expMatrix(matLab.subtract(X, T), basisDegree), matLab.greatEqual(X, T));
+        D = matLab.divMatrix(matLab.diff(matLab.eye(nt), basisDegree + 1), Gamma.gamma((basisDegree + 1) * (Math.pow(dx, basisDegree))));
+        base = matLab.multMatrix(matLab.multMatrix(P, matLab.transpose(D)), Math.pow(-1, basisDegree + 1));
         int nb = matLab.size(base, 2);
         X2 = matLab.kron(x, matLab.ones(1, nb));
         sk = new double[1][nb];
-        for (int i = 0; i < 1; i++){
+        for (int i = 0; i < 1; i++) {
             for (int j = 0; j < nb; j++) {
                 sk[i][j] = knots[i][j] + (basisDegree + 1);
             }

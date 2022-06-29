@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DataModelTest {
-    private  static final ResourceExtractor RESOURCE_EXTRACTOR = new ResourceExtractor(PeakShapes_Tripoli.class);
+    private static final ResourceExtractor RESOURCE_EXTRACTOR = new ResourceExtractor(PeakShapes_Tripoli.class);
 
     @BeforeEach
     void setUp() {
@@ -27,7 +27,7 @@ class DataModelTest {
     void dataModel() throws IOException {
         System.err.println("Testing Example Data DV");
         Path dataFile = RESOURCE_EXTRACTOR.extractResourceAsFile("/org/cirdles/peakShapes_Tripoli/dataProccessors/DVCC18-9 z9 Pb-570-PKC-205Pb-PM-S2B7C1.TXT").toPath();
-        MassSpecModel massSpec =  MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
+        MassSpecModel massSpec = MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
 
         DataModel data = new DataModel(dataFile);
 

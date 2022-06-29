@@ -1,11 +1,9 @@
 package org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.massSpec;
 
 import org.cirdles.peakShapes_Tripoli.matlab.MatLab;
-import org.cirdles.peakShapes_Tripoli.splineBasis.SplineBasisModel;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 public class MassSpecModel implements Serializable {
 
@@ -13,7 +11,7 @@ public class MassSpecModel implements Serializable {
     private double theoreticalBeamWidthMM;  //% a priori estimate of beam width (mm)
     private double effectiveRadiusMagnetMM; //% effective radius of magnet (mm)
     private String[] faradayNames;            //% names of Faradays as string array
-    private String[]  ionCounterNames;        //% names of ion counters as string array
+    private String[] ionCounterNames;        //% names of ion counters as string array
     private double[][] amplifierResistance;    // % resistance of Faraday amplifiers (ohms)
 
     @Serial
@@ -22,11 +20,11 @@ public class MassSpecModel implements Serializable {
     private String massSpecName;
 
 
-    private MassSpecModel(String massSpecName){
+    private MassSpecModel(String massSpecName) {
         this.massSpecName = massSpecName;
         MatLab matLab = new MatLab();
 
-        switch (massSpecName){
+        switch (massSpecName) {
             case "PhoenixKansas_1e12" -> {
                 this.collectorWidthMM = 0.95135;
                 this.theoreticalBeamWidthMM = 0.35;
@@ -49,7 +47,7 @@ public class MassSpecModel implements Serializable {
     }
 
 
-    public static  MassSpecModel initializeMassSpec(String name){
+    public static MassSpecModel initializeMassSpec(String name) {
         return new MassSpecModel(name);
     }
 

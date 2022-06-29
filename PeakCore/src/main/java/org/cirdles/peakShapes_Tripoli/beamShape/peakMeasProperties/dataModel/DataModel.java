@@ -12,9 +12,9 @@ import java.util.List;
 public class DataModel {
 
     private List<Double> magnetMasses;         // vector of masses for intensity measurements
-    private List <Double> measPeakIntensity;    // vector of corresponding peak intensities
+    private List<Double> measPeakIntensity;    // vector of corresponding peak intensities
     private double peakCenterMass;          // mass at center of peak from header
-    private String integPeriodMS ;          // integration period of measurements in ms
+    private String integPeriodMS;          // integration period of measurements in ms
     private String MassID;                  // name of peak getting centered e.g. "205Pb"
     private String detectorName;            // name of detector as string e.g. "L2"
     private double collectorWidthAMU;       // width of collector aperture in AMU at center mass
@@ -54,9 +54,9 @@ public class DataModel {
         this.measPeakIntensity = new ArrayList<>();
 
         int phase = 0;
-        for (String line : contentsByLine){
-            if (!line.isEmpty()){
-                switch (phase){
+        for (String line : contentsByLine) {
+            if (!line.isEmpty()) {
+                switch (phase) {
                     case 0 -> headerLine.add(line.split("\\s*,\\s*"));
                     case 1 -> columnNames.add(line.split("\\s*,\\s*"));
                     case 2 -> {
@@ -66,15 +66,15 @@ public class DataModel {
                     }
                 }
 
-                if (line.startsWith("#START")){
+                if (line.startsWith("#START")) {
                     phase = 1;
-                }else if (phase == 1){
+                } else if (phase == 1) {
                     phase = 2;
                 }
             }
         }
 
-        this.detectorName =  headerLine.get(1)[1];
+        this.detectorName = headerLine.get(1)[1];
         this.MassID = headerLine.get(2)[1];
         this.peakCenterMass = Double.parseDouble(headerLine.get(4)[1]);
         this.integPeriodMS = headerLine.get(10)[1];
@@ -82,11 +82,11 @@ public class DataModel {
 
     }
 
-    public void calcCollectorWidthAMU(MassSpecModel massSpec){
+    public void calcCollectorWidthAMU(MassSpecModel massSpec) {
         collectorWidthAMU = peakCenterMass / (massSpec.getEffectiveRadiusMagnetMM() * massSpec.getCollectorWidthMM());
     }
 
-    public void calcBeamWidthAMU(MassSpecModel massSpec){
+    public void calcBeamWidthAMU(MassSpecModel massSpec) {
         theoreticalBeamWidthAMU = peakCenterMass / (massSpec.getEffectiveRadiusMagnetMM() * massSpec.getTheoreticalBeamWidthMM());
     }
 
