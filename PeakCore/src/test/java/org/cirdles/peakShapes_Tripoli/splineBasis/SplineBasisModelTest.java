@@ -28,7 +28,7 @@ class SplineBasisModelTest {
         double[][] vector = { {4}, {1}, {3}, {2}};
         double[][] vector2 = { {3.0, 1.0, 3}, {3, 2, 8}};
         double[][] testArr = {{1, 3, 5}, {7, 11, 13}, {17, 19, 23}};
-        SplineBasisModel base = SplineBasisModel.initializeSpline(testArr, 1000, 3);
+        SplineBasisModel base = SplineBasisModel.initializeSpline(B, 500, 3);
 
 
         System.out.println(Arrays.deepToString(base.getBSplineMatrix()));
