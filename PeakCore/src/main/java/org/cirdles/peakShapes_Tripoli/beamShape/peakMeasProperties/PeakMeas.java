@@ -15,7 +15,7 @@ public class PeakMeas {
     private PeakMeas(DataModel data, MassSpecModel massSpec) {
         this.collectorWidthAMU = calcWidthAMU(data, massSpec, massSpec.getCollectorWidthMM());
         this.theoreticalBeamWidthAMU = calcWidthAMU(data, massSpec, massSpec.getTheoreticalBeamWidthMM());
-        double[][] collector = new double[data.getMagnetMasses().size()][2];
+        double[][] collector = new double[data.getMagnetMasses().length][2];
 
         // collectorLimits is a matrix with two columns and the same
         // number of rows as magnet masses.  Each row contains the mass
@@ -24,15 +24,15 @@ public class PeakMeas {
         for (int i = 0; i < collector.length; i++) {
             for (int j = 0; j < collector[0].length; j++) {
                 if (j == 0) {
-                    collector[i][j] = data.getMagnetMasses().get(i) - data.getCollectorWidthAMU();
+                    collector[i][j] = data.getMagnetMasses()[i][0] - data.getCollectorWidthAMU();
                 } else {
-                    collector[i][j] = data.getMagnetMasses().get(i) + data.getCollectorWidthAMU();
+                    collector[i][j] = data.getMagnetMasses()[i][0] + data.getCollectorWidthAMU();
                 }
             }
         }
         this.collectorLimits = collector;
 
-        this.deltaMagnetMass = data.getMagnetMasses().get(1) - data.getMagnetMasses().get(0);
+        this.deltaMagnetMass = data.getMagnetMasses()[1][0] - data.getMagnetMasses()[0][0];
         this.beamWindow = data.getTheoreticalBeamWidthAMU() * 2;
 
 
@@ -44,7 +44,7 @@ public class PeakMeas {
 
 
     public double calcWidthAMU(DataModel data, MassSpecModel massSpec, double widthMM) {
-        return data.getPeakCenterMass() / (massSpec.getEffectiveRadiusMagnetMM() * widthMM);
+        return data.getPeakCenterMass() / massSpec.getEffectiveRadiusMagnetMM() * widthMM;
     }
 
     public double getTheoreticalBeamWidthAMU() {
