@@ -5,7 +5,7 @@ import jama.Matrix;
 public class MatLab {
 
     // Kronecker product of 2 arrays
-    public double[][] kron(double[][] A, double[][] B) {
+    public static double[][] kron(double[][] A, double[][] B) {
         int rowA = A.length;
         int colA = A[0].length;
         int rowB = B.length;
@@ -51,7 +51,7 @@ public class MatLab {
     }
 
     // matlab ones creates matrix of all ones of desired rows and columns
-    public double[][] ones(int rows, int cols) {
+    public static double[][] ones(int rows, int cols) {
         double[][] newOne = new double[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -62,7 +62,7 @@ public class MatLab {
         return newOne;
     }
 
-    public double[][] ones(int dim) {
+    public static double[][] ones(int dim) {
         double[][] newOne = new double[dim][dim];
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
@@ -74,7 +74,7 @@ public class MatLab {
     }
 
     // matlab subtract matrices
-    public double[][] subtract(double[][] A, double[][] B) {
+    public static double[][] subtract(double[][] A, double[][] B) {
 //            int rowSize = Math.min(A.length, B.length);
 //            int colSize = Math.min(A[0].length, B[0].length);
 //            double[][] C = new double[A.length][A[0].length];
@@ -129,7 +129,7 @@ public class MatLab {
     }
 
     // matlab set matrix to degree
-    public double[][] expMatrix(double[][] matrix, int deg) {
+    public static double[][] expMatrix(double[][] matrix, int deg) {
         int row = matrix.length;
         int col = matrix[0].length;
         double[][] mat = new double[row][col];
@@ -143,7 +143,7 @@ public class MatLab {
         return mat;
     }
 
-    public Matrix expMatrix(Matrix A, int deg) {
+    public static Matrix expMatrix(Matrix A, int deg) {
         double[][] matrix = A.getArray();
         int row = matrix.length;
         int col = matrix[0].length;
@@ -159,7 +159,7 @@ public class MatLab {
     }
 
     // matlab multiply matrix by matrix
-    public double[][] multMatrix(double[][] A, double[][] B) {
+    public static double[][] multMatrix(double[][] A, double[][] B) {
         int rowA = A.length;
         int colA = A[0].length;
         int rowB = B.length;
@@ -205,7 +205,7 @@ public class MatLab {
     }
 
     // matlab multiply matrix by int
-    public double[][] multMatrix(double[][] A, double multiply) {
+    public static double[][] multMatrix(double[][] A, double multiply) {
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[0].length; j++) {
                 A[i][j] *= multiply;
@@ -216,7 +216,7 @@ public class MatLab {
     }
 
     // Divides matrix by double
-    public double[][] divMatrix(double[][] A, double divide) {
+    public static double[][] divMatrix(double[][] A, double divide) {
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[0].length; j++) {
                 A[i][j] /= divide;
@@ -226,7 +226,7 @@ public class MatLab {
         return A;
     }
 
-    public Matrix divMatrix(Matrix mat, double divide) {
+    public static Matrix divMatrix(Matrix mat, double divide) {
         double[][] A = mat.getArray();
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[0].length; j++) {
@@ -238,7 +238,7 @@ public class MatLab {
     }
 
     // matlab eye
-    public double[][] eye(int size) {
+    public static double[][] eye(int size) {
         double[][] newEye = new double[size][size];
 
         for (int i = 0; i < size; i++) {
@@ -255,7 +255,7 @@ public class MatLab {
     }
 
     // matlab diff
-    public double[][] diff(double[][] mat) {
+    public static double[][] diff(double[][] mat) {
         int row = mat.length;
         int col = mat[0].length - 1;
         double[][] newDiff;
@@ -279,7 +279,7 @@ public class MatLab {
         }
     }
 
-    public double[][] diff(double[][] mat, int num) {
+    public static double[][] diff(double[][] mat, int num) {
         double[][] refDiff;
         refDiff = mat;
         for (int i = 0; i < num; i++) {
@@ -290,7 +290,7 @@ public class MatLab {
     }
 
     // Transposes matrix
-    public double[][] transpose(double[][] mat) {
+    public static double[][] transpose(double[][] mat) {
         int row = mat[0].length;
         int col = mat.length;
         double[][] transP = new double[row][col];
@@ -303,7 +303,7 @@ public class MatLab {
         return transP;
     }
 
-    public double[][] greatEqual(double[][] mat1, double[][] mat2) {
+    public static double[][] greatEqual(double[][] mat1, double[][] mat2) {
         int maxRow = Math.min(mat1.length, mat2.length);
         int maxCol = Math.min(mat1[0].length, mat2[0].length);
         int i, j = 0;
@@ -337,7 +337,7 @@ public class MatLab {
     }
 
 
-    public double[][] greatEqual(double[][] mat, double num) {
+    public static double[][] greatEqual(double[][] mat, double num) {
         double[][] ge = new double[mat.length][mat[0].length];
         for (int i = 0; i < mat.length; i++) {
             for (int j = 0; j < mat[0].length; j++) {
@@ -352,7 +352,7 @@ public class MatLab {
         return ge;
     }
 
-    public double[][] lessEqual(double[][] mat, double num) {
+    public static double[][] lessEqual(double[][] mat, double num) {
         double[][] le = new double[mat.length][mat[0].length];
         for (int i = 0; i < mat.length; i++) {
             for (int j = 0; j < mat[0].length; j++) {
@@ -367,7 +367,7 @@ public class MatLab {
         return le;
     }
 
-    public double[][] lessThan(double[][] mat1, double[][] mat2) {
+    public static double[][] lessThan(double[][] mat1, double[][] mat2) {
         int maxRow = Math.min(mat1.length, mat2.length);
         int maxCol = Math.min(mat1[0].length, mat2[0].length);
         int i, j = 0;
@@ -400,7 +400,7 @@ public class MatLab {
     }
 
     // matlab size only works on 2d arrays
-    public int[] size(double[][] mat) {
+    public static int[] size(double[][] mat) {
         int[] matDim;
         matDim = new int[]{mat.length, mat[0].length};
 
@@ -408,7 +408,7 @@ public class MatLab {
     }
 
     // matlab size with index
-    public int size(double[][] mat, int num) {
+    public static int size(double[][] mat, int num) {
         if (num > 2) {
             return -1;
         } else {
@@ -420,7 +420,7 @@ public class MatLab {
         }
     }
 
-    public int size(Matrix A, int num) {
+    public static int size(Matrix A, int num) {
         double[][] mat = A.getArray();
         if (num > 2) {
             return -1;
@@ -434,7 +434,7 @@ public class MatLab {
     }
 
     // matlab linspace
-    public double[][] linspace(double min, double max, double points) {
+    public static double[][] linspace(double min, double max, double points) {
         double[][] d = new double[1][(int) points];
         for (int i = 0; i < points; i++) {
             d[0][i] = min + i * (max - min) / (points - 1);
@@ -442,7 +442,7 @@ public class MatLab {
         return d;
     }
 
-    public double[][] zeros(int rows, int cols) {
+    public static double[][] zeros(int rows, int cols) {
         double[][] zeroMat = new double[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -453,7 +453,7 @@ public class MatLab {
         return zeroMat;
     }
 
-    public double[][] andMatrix(double[][] A, double[][] B) {
+    public static double[][] andMatrix(double[][] A, double[][] B) {
         int rowA = A.length;
         int colA = A[0].length;
         int rowB = B.length;
@@ -512,7 +512,7 @@ public class MatLab {
         }
     }
 
-    public double[][] find(double[][] mat, int num, String dir) {
+    public static double[][] find(double[][] mat, int num, String dir) {
         double[][] found = new double[num][1];
         int numCheck = 0;
         int i = 0;
@@ -557,7 +557,7 @@ public class MatLab {
         return found;
     }
 
-    public double[][] any(double[][] matrix, int dim) {
+    public static double[][] any(double[][] matrix, int dim) {
         double[][] anyMat = null;
         double sum = 0;
         if (dim == 1) {
@@ -600,7 +600,7 @@ public class MatLab {
         return anyMat;
     }
 
-    public double[][] rDivide(double[][] A, double div) {
+    public static double[][] rDivide(double[][] A, double div) {
         double[][] divMat = new double[A.length][A[0].length];
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[0].length; j++) {
@@ -611,7 +611,7 @@ public class MatLab {
         return divMat;
     }
 
-    public Matrix rDivide(Matrix A, double div) {
+    public static Matrix rDivide(Matrix A, double div) {
         double[][] divMat = new double[A.getRowDimension()][A.getColumnDimension()];
         for (int i = 0; i < A.getArray().length; i++) {
             for (int j = 0; j < A.getArray()[0].length; j++) {
@@ -654,7 +654,7 @@ public class MatLab {
 //        }
 //        return maxMat;
 //    }
-    public double[][] max(double[][] matrix, int dim) {
+    public static double[][] max(double[][] matrix, int dim) {
         double[][] maxMat = new double[matrix.length][matrix[0].length];
         double max = 0;
         for (int i = 0; i < matrix.length; i++) {
@@ -665,7 +665,7 @@ public class MatLab {
         return maxMat;
     }
 
-    public double[][] diag(double[][] mat) {
+    public static double[][] diag(double[][] mat) {
         double[][] diagMat = new double[mat.length][mat.length];
         int dag = 0;
 
@@ -683,7 +683,7 @@ public class MatLab {
         return diagMat;
     }
 
-    public double[][] mLDivide(double[][] A, double[][] B) {
+    public static double[][] mLDivide(double[][] A, double[][] B) {
         int rowA = A.length;
         int colA = A[0].length;
         int rowB = B.length;
@@ -728,7 +728,7 @@ public class MatLab {
         }
     }
 
-    public Matrix mLDivide(Matrix matA, Matrix matB) {
+    public static Matrix mLDivide(Matrix matA, Matrix matB) {
         double[][] A = matA.getArray();
         double[][] B = matB.getArray();
 
