@@ -1,5 +1,6 @@
 package org.cirdles.peakShapes_Tripoli.splineBasis;
 
+import jama.Matrix;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,9 +24,9 @@ class SplineBasisModelTest {
         double[][] vector = {{4}, {1}, {3}, {2}};
         double[][] vector2 = {{3.0, 1.0, 3}, {3, 2, 8}};
         double[][] testArr = {{1, 3, 5}, {7, 11, 13}, {17, 19, 23}};
-        SplineBasisModel base = SplineBasisModel.initializeSpline(B, 500, 3);
+        SplineBasisModel base = SplineBasisModel.initializeSpline(new Matrix(B), 500, 3);
 
 
-        System.out.println(Arrays.deepToString(base.getBSplineMatrix()));
+        System.out.println(base.getBSplineMatrix());
     }
 }

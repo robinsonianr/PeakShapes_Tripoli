@@ -39,6 +39,6 @@ class DataModelTest {
         System.out.println(data.getCollectorWidthAMU());
 
         assertEquals(data.getMassID(), "205Pb");
-        assertEquals(data.getMagnetMasses()[0][0], 204.53168);
+        assertEquals(data.getMagnetMasses().get(0, 0), 204.53168);
     }
 }

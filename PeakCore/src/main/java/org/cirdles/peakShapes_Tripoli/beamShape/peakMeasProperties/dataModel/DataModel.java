@@ -1,5 +1,6 @@
 package org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.dataModel;
 
+import jama.Matrix;
 import org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.massSpec.MassSpecModel;
 
 import java.io.IOException;
@@ -11,8 +12,8 @@ import java.util.List;
 
 public class DataModel {
 
-    private double[][] magnetMasses;         // vector of masses for intensity measurements
-    private double[][] measPeakIntensity;    // vector of corresponding peak intensities
+    private Matrix magnetMasses;         // vector of masses for intensity measurements
+    private Matrix measPeakIntensity;    // vector of corresponding peak intensities
     private double peakCenterMass;          // mass at center of peak from header
     private String integPeriodMS;          // integration period of measurements in ms
     private String MassID;                  // name of peak getting centered e.g. "205Pb"
@@ -79,15 +80,20 @@ public class DataModel {
         this.MassID = headerLine.get(2)[1];
         this.peakCenterMass = Double.parseDouble(headerLine.get(4)[1]);
         this.integPeriodMS = headerLine.get(10)[1].replaceFirst("ms", "");
-        magnetMasses = new double[masses.size()][1];
-        measPeakIntensity = new double[intensity.size()][1];
+        double[][] magMasses = new double[masses.size()][1];
+        double[][] mPeakIntensity = new double[intensity.size()][1];
 
         for (int i = 0; i < masses.size(); i++) {
-            magnetMasses[i][0] = masses.get(i);
+            magMasses[i][0] = masses.get(i);
         }
         for (int i = 0; i < intensity.size(); i++) {
-            measPeakIntensity[i][0] = intensity.get(i);
+            mPeakIntensity[i][0] = intensity.get(i);
         }
+
+        magnetMasses = new Matrix(magMasses);
+        measPeakIntensity = new Matrix(mPeakIntensity);
+
+
 
 
 
@@ -113,11 +119,11 @@ public class DataModel {
         return theoreticalBeamWidthAMU;
     }
 
-    public double[][] getMagnetMasses() {
+    public Matrix getMagnetMasses() {
         return magnetMasses;
     }
 
-    public double[][] getMeasPeakIntensity() {
+    public Matrix getMeasPeakIntensity() {
         return measPeakIntensity;
     }
 
@@ -133,11 +139,11 @@ public class DataModel {
         return MassID;
     }
 
-    public void setMagnetMasses(double[][] magnetMasses) {
+    public void setMagnetMasses(Matrix magnetMasses) {
         this.magnetMasses = magnetMasses;
     }
 
-    public void setMeasPeakIntensity(double[][] measPeakIntensity) {
+    public void setMeasPeakIntensity(Matrix measPeakIntensity) {
         this.measPeakIntensity = measPeakIntensity;
     }
 }
