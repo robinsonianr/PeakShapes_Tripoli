@@ -78,7 +78,7 @@ public class DataModel {
         this.detectorName = headerLine.get(1)[1];
         this.MassID = headerLine.get(2)[1];
         this.peakCenterMass = Double.parseDouble(headerLine.get(4)[1]);
-        this.integPeriodMS = headerLine.get(10)[1];
+        this.integPeriodMS = headerLine.get(10)[1].replaceFirst("ms", "");
         magnetMasses = new double[masses.size()][1];
         measPeakIntensity = new double[intensity.size()][1];
 

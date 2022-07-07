@@ -32,7 +32,7 @@ class BeamShapeCollectorWidthTest {
         Path dataFile = RESOURCE_EXTRACTOR.extractResourceAsFile("/org/cirdles/peakShapes_Tripoli/dataProccessors/DVCC18-9 z9 Pb-570-PKC-205Pb-PM-S2B7C1.TXT").toPath();
         MassSpecModel massSpec = MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
         BeamShapeCollectorWidth beamShape = new BeamShapeCollectorWidth(dataFile, massSpec);
-        beam = beamShape.getBeamShape();
-        System.out.println(Arrays.deepToString(beam.getArray()));
+        beamShape.calcBeamShapeCollectorWidth();
+
     }
 }

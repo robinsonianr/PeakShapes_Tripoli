@@ -18,6 +18,8 @@ public class BeamShapeCollectorWidth {
     PeakMeas peakMeas;
     MassSpecModel massSpec;
 
+    private double maxBeam, maxBeamIndex, thesholdIntensity, leftBoundary, rightBoundary, measBeamWidthAMU, measBeamWidthMM;
+    private Matrix peakLeft, leftAboveTheshold, leftThesholdChange, peakRight, rightAboveThreshold, rightThesholdChange;
 
 
     public BeamShapeCollectorWidth(Path fileName, MassSpecModel massSpec) throws IOException {
@@ -30,10 +32,8 @@ public class BeamShapeCollectorWidth {
 
     }
 
-
-    public Matrix getBeamShape() {
+    public void calcBeamShapeCollectorWidth() {
         Matrix Basis, gb, WData, BeamWLS, TrimGMatrix, TrimMagnetMasses, peakMassIntensity, magnetMasses, D, beamShape, BeamWNNLS, test1, test2;
-
 
         // Spline basis Basis
 
@@ -125,7 +125,6 @@ public class BeamShapeCollectorWidth {
 
 
         // WLS and NNLS
-        //TODO fix BeamWNNLS matrix
         double[][] GB = MatLab.multMatrix(trimGMatrix, basis);
         gb = TrimGMatrix.times(Basis);
         double[][] wData = MatLab.diag(MatLab.rDivide(MatLab.max(data.getMeasPeakIntensity(), 1), 1));
@@ -142,12 +141,36 @@ public class BeamShapeCollectorWidth {
 
         beamShape = Basis.times(BeamWNNLS);
 
-
         // Determine peak width
 
-        return beamShape;
-    }
+        this.maxBeam = beamShape.normInf();
+        int index = 0;
+        for (int i = 0; i < beamShape.getRowDimension(); i++) {
+            for (int l = 0; l < beamShape.getColumnDimension(); l++) {
+                if (beamShape.get(i, l) == maxBeam) {
+                    this.maxBeamIndex = index;
+                    break;
+                }
+                index++;
+            }
+        }
+        this.thesholdIntensity = maxBeam * (0.01);
 
+        this.peakLeft = beamShape.getMatrix(0, (int) maxBeamIndex - 1, 0, 0);
+        this.leftAboveTheshold = new Matrix(MatLab.greatEqual(peakLeft.getArray(), thesholdIntensity));
+        this.leftThesholdChange = leftAboveTheshold.getMatrix(1, leftAboveTheshold.getRowDimension() - 1, 0, 0).minus(leftAboveTheshold.getMatrix(0, leftAboveTheshold.getRowDimension() - 2, 0, 0));
+        this.leftBoundary = MatLab.find(leftThesholdChange.getArray(), 1, "last")[0][0] + 1;
+
+
+        this.peakRight = beamShape.getMatrix((int) maxBeamIndex, beamShape.getRowDimension() - 1, 0, 0);
+        this.rightAboveThreshold = new Matrix(MatLab.greatEqual(peakRight.getArray(), thesholdIntensity));
+        this.rightThesholdChange = rightAboveThreshold.getMatrix(0, rightAboveThreshold.getRowDimension() - 2, 0, 0).minus(rightAboveThreshold.getMatrix(1, rightAboveThreshold.getRowDimension() - 1, 0, 0));
+        this.rightBoundary = MatLab.find(rightThesholdChange.getArray(), 1, "first")[0][0] + maxBeamIndex - 1;
+
+        this.measBeamWidthAMU = beamMassInterp[0][(int) rightBoundary] - beamMassInterp[0][(int) leftBoundary];
+        this.measBeamWidthMM = measBeamWidthAMU * massSpec.getEffectiveRadiusMagnetMM() / data.getPeakCenterMass();
+        
+    }
 
     // * Copyright 2008 Josh Vermaas, except he's nice and instead prefers
 // * this to be licensed under the LGPL. Since the license itself is longer
