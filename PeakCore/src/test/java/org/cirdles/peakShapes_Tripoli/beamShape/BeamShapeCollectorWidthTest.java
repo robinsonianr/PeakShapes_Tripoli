@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,6 +33,6 @@ class BeamShapeCollectorWidthTest {
         MassSpecModel massSpec = MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
         BeamShapeCollectorWidth beamShape = new BeamShapeCollectorWidth(dataFile, massSpec);
         beam = beamShape.getBeamShape();
-        System.out.println(beam);
+        System.out.println(Arrays.deepToString(beam.getArray()));
     }
 }

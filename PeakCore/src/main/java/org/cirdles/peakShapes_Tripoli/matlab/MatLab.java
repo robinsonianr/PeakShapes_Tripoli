@@ -61,6 +61,7 @@ public class MatLab {
 
         return newOne;
     }
+
     public double[][] ones(int dim) {
         double[][] newOne = new double[dim][dim];
         for (int i = 0; i < dim; i++) {
@@ -224,6 +225,7 @@ public class MatLab {
 
         return A;
     }
+
     public Matrix divMatrix(Matrix mat, double divide) {
         double[][] A = mat.getArray();
         for (int i = 0; i < A.length; i++) {
@@ -262,7 +264,7 @@ public class MatLab {
             newDiff = new double[row][col];
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
-                    newDiff[i][j] = Math.abs(mat[i][j] - mat[i][j + 1]);
+                    newDiff[i][j] = (mat[i][j] - mat[i][j + 1]);
                 }
             }
             return newDiff;
@@ -270,7 +272,7 @@ public class MatLab {
             newDiff = new double[row - 1][col + 1];
             for (int i = 0; i < row - 1; i++) {
                 for (int j = 0; j < col + 1; j++) {
-                    newDiff[i][j] = Math.abs(mat[i][j] - mat[i + 1][j]);
+                    newDiff[i][j] = mat[i][j] - mat[i + 1][j];
                 }
             }
             return newDiff;
@@ -571,6 +573,7 @@ public class MatLab {
                 } else {
                     anyMat[0][i] = 0;
                 }
+                sum = 0;
 
             }
 
@@ -588,6 +591,7 @@ public class MatLab {
                 } else {
                     anyMat[i][0] = 0;
                 }
+                sum = 0;
 
             }
         }
@@ -607,49 +611,70 @@ public class MatLab {
         return divMat;
     }
 
-    public double[][] max(double[][] matrix, int dim) {
-        double[][] maxMat = null;
-        double max = 0;
-        if (dim == 1) {
-            maxMat = new double[1][matrix[0].length];
-
-            for (int i = 0; i < matrix[0].length; i++) {
-                for (int j = 0; j < matrix.length; j++) {
-                    if (matrix[j][i] > max)
-                        max = matrix[j][i];
-
-                }
-                maxMat[0][i] = max;
+    public Matrix rDivide(Matrix A, double div) {
+        double[][] divMat = new double[A.getRowDimension()][A.getColumnDimension()];
+        for (int i = 0; i < A.getArray().length; i++) {
+            for (int j = 0; j < A.getArray()[0].length; j++) {
+                divMat[i][j] = div / A.get(i, j);
             }
+        }
 
+        return new Matrix(divMat);
+    }
 
-        } else if (dim == 2) {
-            maxMat = new double[matrix.length][1];
-
-            for (int i = 0; i < matrix.length; i++) {
-                for (int j = 0; j < matrix[0].length; j++) {
-                    if (matrix[i][j] > max)
-                        max = matrix[i][j];
-
-                }
-
-                maxMat[i][0] = max;
-
+//    public double[][] max(double[][] matrix, int dim) {
+//        double[][] maxMat = null;
+//        double max = 0;
+//        if (dim == 1) {
+//            maxMat = new double[1][matrix[0].length];
+//
+//            for (int i = 0; i < matrix[0].length; i++) {
+//                for (int j = 0; j < matrix.length; j++) {
+//                    if (matrix[j][i] > max)
+//                        max = matrix[j][i];
+//
+//                }
+//                maxMat[0][i] = max;
+//            }
+//
+//
+//        } else if (dim == 2) {
+//            maxMat = new double[matrix.length][1];
+//
+//            for (int i = 0; i < matrix.length; i++) {
+//                for (int j = 0; j < matrix[0].length; j++) {
+//                    if (matrix[i][j] > max)
+//                        max = matrix[i][j];
+//
+//                }
+//
+//                maxMat[i][0] = max;
+//
+//            }
+//        }
+//        return maxMat;
+//    }
+    public double[][] max(double[][] matrix, int dim) {
+        double[][] maxMat = new double[matrix.length][matrix[0].length];
+        double max = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                maxMat[i][j] = (dim > matrix[i][j]) ? dim : matrix[i][j];
             }
         }
         return maxMat;
     }
 
-    public double[][] diag(double[][] mat){
-        double[][] diagMat = new double[mat[0].length][mat[0].length];
+    public double[][] diag(double[][] mat) {
+        double[][] diagMat = new double[mat.length][mat.length];
         int dag = 0;
 
         for (int i = 0; i < diagMat.length; i++) {
             for (int j = 0; j < diagMat[0].length; j++) {
-                if (i == j){
-                    diagMat[i][j] = mat[0][dag];
+                if (i == j) {
+                    diagMat[i][j] = mat[dag][0];
                     dag++;
-                }else {
+                } else {
                     diagMat[i][j] = 0;
                 }
             }
@@ -658,7 +683,7 @@ public class MatLab {
         return diagMat;
     }
 
-    public double[][] mLDivide(double[][] A, double[][] B){
+    public double[][] mLDivide(double[][] A, double[][] B) {
         int rowA = A.length;
         int colA = A[0].length;
         int rowB = B.length;
@@ -700,6 +725,54 @@ public class MatLab {
                 }
             }
             return C;
+        }
+    }
+
+    public Matrix mLDivide(Matrix matA, Matrix matB) {
+        double[][] A = matA.getArray();
+        double[][] B = matB.getArray();
+
+        int rowA = A.length;
+        int colA = A[0].length;
+        int rowB = B.length;
+        int colB = B[0].length;
+        if (colA == colB && rowA == rowB && rowB == colB) {
+            double[][] C = new double[rowB][colA];
+            for (int i = 0; i < rowB; i++) {
+                for (int j = 0; j < colA; j++) {
+                    C[i][j] = A[i][j] / B[i][j];
+                }
+            }
+            return new Matrix(C);
+        } else if (rowA == 1 && rowA == colB) {
+            double[][] C = new double[rowB][colA];
+            for (int i = 0; i < rowB; i++) {
+                for (int j = 0; j < colA; j++) {
+                    C[i][j] = A[0][j] / B[i][0];
+                }
+            }
+            return new Matrix(C);
+        } else if (colA == 1 && colA == rowB) {
+            double[][] C = new double[rowA][colB];
+            for (int i = 0; i < rowA; i++) {
+                for (int j = 0; j < colB; j++) {
+                    C[i][j] = A[i][0] / B[0][j];
+                }
+            }
+            return new Matrix(C);
+        } else {
+            double sum;
+            double[][] C = new double[rowA][colB];
+            for (int i = 0; i < rowA; i++) {
+                for (int j = 0; j < colB; j++) {
+                    sum = 0;
+                    for (int l = 0; l < rowB; l++) {
+                        sum += A[i][l] / B[l][j];
+                    }
+                    C[i][j] = sum;
+                }
+            }
+            return new Matrix(C);
         }
     }
 

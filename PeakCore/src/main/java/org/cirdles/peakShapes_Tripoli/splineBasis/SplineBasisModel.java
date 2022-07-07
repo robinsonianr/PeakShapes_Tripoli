@@ -110,17 +110,10 @@ public class SplineBasisModel {
         double xLower;
         double xUpper;
 
-        if (xl > x[0][0]) {
-            xLower = x[0][0];
-        } else {
-            xLower = xl;
-        }
 
-        if (xr < x[x.length - 1][x[0].length - 1]) {
-            xUpper = x[x.length - 1][x[0].length - 1];
-        } else {
-            xUpper = xr;
-        }
+        xLower = ((xl > x[0][0])) ? x[0][0] : xl;
+
+        xUpper = (xr < x[x.length - 1][x[0].length - 1]) ? x[x.length - 1][x[0].length - 1] : xr;
 
 
         double dx = (xUpper - xLower) / numSegments;
@@ -129,43 +122,35 @@ public class SplineBasisModel {
         int nx = x[0].length;
         int nt = knots[0].length;
 
-        X = matLab.kron(x, matLab.ones(1, nt));
+        X = matLab.transpose(matLab.kron(x, matLab.transpose(matLab.ones(1, nt))));
         x1 = new Matrix(X);
         T = matLab.kron(knots, matLab.ones(nx, 1));
 
         t = new Matrix(T);
 
-//        System.out.println(x1.getRowDimension());
-//        System.out.println(x1.getColumnDimension());
-//        System.out.println(t.getRowDimension());
-//        System.out.println(t.getColumnDimension());
 
 
-        P = matLab.multMatrix(matLab.expMatrix(matLab.subtract(X, T), basisDegree), matLab.greatEqual(X, T));
+        //P = matLab.multMatrix(matLab.expMatrix(matLab.subtract(X, T), basisDegree), matLab.greatEqual(X, T));
 
-        p = new Matrix(P);
+        p = matLab.expMatrix(x1.minus(t), basisDegree).arrayTimes(new Matrix(matLab.greatEqual(X, T)));
         //matLab.expMatrix(x1.minus(t), basisDegree).times(new Matrix(matLab.greatEqual(X, T)));
-        double v = (basisDegree + 1) * (Math.pow(dx, basisDegree));
-        D = matLab.divMatrix(matLab.diff(matLab.eye(nt), basisDegree + 1), Gamma.gamma(v));
-        d = matLab.divMatrix(new Matrix(matLab.diff(matLab.eye(nt), basisDegree + 1)), Gamma.gamma(v));
-        base = matLab.multMatrix(matLab.multMatrix(P, matLab.transpose(D)), Math.pow(-1, basisDegree + 1));
-        Base = p.times(d.transpose()).times(Math.pow((-1), basisDegree + 1));
+        double v = (basisDegree + 1);
+        D = matLab.divMatrix(matLab.diff(matLab.eye(nt), basisDegree + 1 ), (Gamma.gamma(v) * (Math.pow(dx, basisDegree))));
+        d = new Matrix(D);
+        //base = matLab.multMatrix(matLab.multMatrix(P, matLab.transpose(D)), Math.pow(-1, basisDegree + 1));
+        Base =  p.times(d.transpose());
 
         int nb = matLab.size(Base, 2);
-        X2 = matLab.kron(x, matLab.ones(1, nb));
-        System.out.println(X2.length);
-        System.out.println(X2[0].length);
+        X2 = matLab.transpose(matLab.kron(x, matLab.transpose(matLab.ones(1, nb))));
         sk = new double[1][nb];
         for (int i = 0; i < 1; i++) {
             for (int j = 0; j < nb; j++) {
-                sk[i][j] = knots[i][j] + (basisDegree + 1);
+                sk[i][j] = knots[i][j + basisDegree + 1] ;
             }
         }
         SK = matLab.kron(sk, matLab.ones(nx, 1));
-        System.out.println(SK.length);
-        System.out.println(SK[0].length);
         MASK = matLab.lessThan(X2, SK);
-        base = Base.times(new Matrix(MASK)).getArray();
+        base = Base.arrayTimes(new Matrix(MASK)).getArray();
 
         //matLab.multMatrix(base, MASK)
 

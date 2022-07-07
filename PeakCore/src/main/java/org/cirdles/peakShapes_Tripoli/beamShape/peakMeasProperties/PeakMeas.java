@@ -24,9 +24,9 @@ public class PeakMeas {
         for (int i = 0; i < collector.length; i++) {
             for (int j = 0; j < collector[0].length; j++) {
                 if (j == 0) {
-                    collector[i][j] = data.getMagnetMasses()[i][0] - data.getCollectorWidthAMU();
+                    collector[i][j] = data.getMagnetMasses()[i][0] - data.getCollectorWidthAMU() / 2;
                 } else {
-                    collector[i][j] = data.getMagnetMasses()[i][0] + data.getCollectorWidthAMU();
+                    collector[i][j] = data.getMagnetMasses()[i][0] + data.getCollectorWidthAMU() / 2;
                 }
             }
         }
