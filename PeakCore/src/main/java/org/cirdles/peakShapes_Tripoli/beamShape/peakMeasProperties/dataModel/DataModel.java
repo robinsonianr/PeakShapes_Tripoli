@@ -94,9 +94,6 @@ public class DataModel {
         measPeakIntensity = new Matrix(mPeakIntensity);
 
 
-
-
-
     }
 
     public void calcCollectorWidthAMU(MassSpecModel massSpec) {

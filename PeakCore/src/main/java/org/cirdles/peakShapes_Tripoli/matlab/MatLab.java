@@ -352,6 +352,21 @@ public class MatLab {
         return ge;
     }
 
+    public static double[][] greaterThan(double[][] mat, double num) {
+        double[][] ge = new double[mat.length][mat[0].length];
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                if (mat[i][j] > num) {
+                    ge[i][j] = 1;
+                } else {
+                    ge[i][j] = 0;
+                }
+            }
+        }
+
+        return ge;
+    }
+
     public static double[][] lessEqual(double[][] mat, double num) {
         double[][] le = new double[mat.length][mat[0].length];
         for (int i = 0; i < mat.length; i++) {
@@ -446,6 +461,17 @@ public class MatLab {
         double[][] zeroMat = new double[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
+                zeroMat[i][j] = 0;
+            }
+        }
+
+        return zeroMat;
+    }
+
+    public static double[][] zeros(int size) {
+        double[][] zeroMat = new double[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 zeroMat[i][j] = 0;
             }
         }
@@ -622,38 +648,6 @@ public class MatLab {
         return new Matrix(divMat);
     }
 
-//    public double[][] max(double[][] matrix, int dim) {
-//        double[][] maxMat = null;
-//        double max = 0;
-//        if (dim == 1) {
-//            maxMat = new double[1][matrix[0].length];
-//
-//            for (int i = 0; i < matrix[0].length; i++) {
-//                for (int j = 0; j < matrix.length; j++) {
-//                    if (matrix[j][i] > max)
-//                        max = matrix[j][i];
-//
-//                }
-//                maxMat[0][i] = max;
-//            }
-//
-//
-//        } else if (dim == 2) {
-//            maxMat = new double[matrix.length][1];
-//
-//            for (int i = 0; i < matrix.length; i++) {
-//                for (int j = 0; j < matrix[0].length; j++) {
-//                    if (matrix[i][j] > max)
-//                        max = matrix[i][j];
-//
-//                }
-//
-//                maxMat[i][0] = max;
-//
-//            }
-//        }
-//        return maxMat;
-//    }
     public static double[][] max(double[][] matrix, int dim) {
         double[][] maxMat = new double[matrix.length][matrix[0].length];
         double max = 0;
@@ -776,4 +770,64 @@ public class MatLab {
         }
     }
 
+    public static Matrix concatMatrix(Matrix A, Matrix B) {
+        Matrix concated = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getColumnDimension());
+        int indexBRow = 0;
+
+
+        for (int i = 0; i < concated.getRowDimension() - B.getRowDimension(); i++) {
+            for (int j = 0; j < concated.getColumnDimension(); j++) {
+                concated.set(i, j, A.get(i, j));
+            }
+        }
+
+        for (int i = A.getRowDimension(); i < concated.getRowDimension(); i++) {
+            indexBRow++;
+            int indexBCol = 0;
+            for (int j = 0; j < concated.getColumnDimension(); j++) {
+                concated.set(i, j, B.get(indexBRow - 1, indexBCol));
+                indexBCol++;
+            }
+
+        }
+
+        return concated;
+    }
+
+
+    public static Matrix blkDiag(Matrix A, Matrix B) {
+        Matrix diag = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getRowDimension() + B.getRowDimension());
+        int indexBRow = 0;
+        int indexBCol = 0;
+
+        for (int i = 0; i < diag.getRowDimension() - B.getRowDimension(); i++) {
+            for (int j = 0; j < diag.getColumnDimension() - B.getColumnDimension(); j++) {
+                if (i == j) {
+                    diag.set(i, j, A.get(i, j));
+                } else {
+                    diag.set(i, j, 0);
+                }
+
+            }
+        }
+
+        for (int i = A.getRowDimension(); i < diag.getRowDimension(); i++) {
+
+
+            for (int j = A.getColumnDimension(); j < diag.getColumnDimension(); j++) {
+                if (i == j) {
+                    diag.set(i, j, B.get(indexBRow, indexBCol));
+                    indexBCol++;
+                    indexBRow++;
+                }
+
+
+            }
+
+        }
+
+
+        return diag;
+
+    }
 }
