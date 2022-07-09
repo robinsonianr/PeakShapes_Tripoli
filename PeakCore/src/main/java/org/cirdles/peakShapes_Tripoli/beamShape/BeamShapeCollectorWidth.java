@@ -65,7 +65,7 @@ public class BeamShapeCollectorWidth {
             if (!(MatLab.find(massesInCollector.getArray(), 1, "first")[0][0] == 0 && MatLab.find(massesInCollector.getArray(), 1, "last")[0][0] == 0)) {
                 firstMassIndexInside = new Matrix(MatLab.find(massesInCollector.getArray(), 1, "first"));
                 lastMassIndexInside = new Matrix(MatLab.find(massesInCollector.getArray(), 1, "last"));
-                for (int i = (int) firstMassIndexInside.get(0, 0) + 1; i < (int) lastMassIndexInside.get(0, 0) - 1; i++) {
+                for (int i = (int) firstMassIndexInside.get(0, 0) + 1; i < (int) lastMassIndexInside.get(0, 0); i++) {
                     gMatrix.set(iMass, i, deltaBeamMassInterp);
 
                 }
@@ -137,11 +137,11 @@ public class BeamShapeCollectorWidth {
         matrixD = new Matrix(MatLab.diff(MatLab.eye((int) (beamKnots + basisDegree)), orderDiff));
 
         Matrix lamdaD = matrixD.times(Math.sqrt(lambda));
-        gAugmentedTest = MatLab.concatMatrix(GB, lamdaD);
+        Gaugmented = MatLab.concatMatrix(GB, lamdaD);
         measAugmented = MatLab.concatMatrix(data.getMeasPeakIntensity(), new Matrix(MatLab.zeros((int) beamKnots + basisDegree - orderDiff, 1)));
         wtsAugmented = MatLab.blkDiag(WData, new Matrix(MatLab.eye((int) beamKnots + basisDegree - orderDiff)));
-        beamPSpline = gAugmentedTest.transpose().times(wtsAugmented.times(gAugmentedTest)).inverse().times(gAugmentedTest.transpose().times(wtsAugmented.times(measAugmented)));
-        test3 = new Matrix(wtsAugmented.chol().getL().getArray()).times(gAugmentedTest);
+        beamPSpline = Gaugmented.transpose().times(wtsAugmented.times(Gaugmented)).inverse().times(Gaugmented.transpose().times(wtsAugmented.times(measAugmented)));
+        test3 = new Matrix(wtsAugmented.chol().getL().getArray()).times(Gaugmented);
         test4 = new Matrix(wtsAugmented.chol().getL().getArray()).times(measAugmented);
         beamNNPspl = solveNNLS(test3, test4);
 
@@ -169,7 +169,7 @@ public class BeamShapeCollectorWidth {
         this.peakRight = beamShape.getMatrix((int) maxBeamIndex, beamShape.getRowDimension() - 1, 0, 0);
         this.rightAboveThreshold = new Matrix(MatLab.greaterThan(peakRight.getArray(), thesholdIntensity));
         this.rightThesholdChange = rightAboveThreshold.getMatrix(0, rightAboveThreshold.getRowDimension() - 2, 0, 0).minus(rightAboveThreshold.getMatrix(1, rightAboveThreshold.getRowDimension() - 1, 0, 0));
-        this.rightBoundary = MatLab.find(rightThesholdChange.getArray(), 1, "first")[0][0] + maxBeamIndex - 1;
+        this.rightBoundary = MatLab.find(rightThesholdChange.getArray(), 1, "first")[0][0] + maxBeamIndex;
 
         this.measBeamWidthAMU = beamMassInterp.get(0, (int) rightBoundary) - beamMassInterp.get(0, (int) leftBoundary);
         this.measBeamWidthMM = measBeamWidthAMU * massSpec.getEffectiveRadiusMagnetMM() / data.getPeakCenterMass();
