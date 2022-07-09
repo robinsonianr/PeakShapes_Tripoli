@@ -1,5 +1,6 @@
 package org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.dataModel;
 
+import jama.Matrix;
 import org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.massSpec.MassSpecModel;
 
 import java.io.IOException;
@@ -11,8 +12,8 @@ import java.util.List;
 
 public class DataModel {
 
-    private List<Double> magnetMasses;         // vector of masses for intensity measurements
-    private List<Double> measPeakIntensity;    // vector of corresponding peak intensities
+    private Matrix magnetMasses;         // vector of masses for intensity measurements
+    private Matrix measPeakIntensity;    // vector of corresponding peak intensities
     private double peakCenterMass;          // mass at center of peak from header
     private String integPeriodMS;          // integration period of measurements in ms
     private String MassID;                  // name of peak getting centered e.g. "205Pb"
@@ -50,8 +51,8 @@ public class DataModel {
 
         List<String[]> headerLine = new ArrayList<>();
         List<String[]> columnNames = new ArrayList<>();
-        this.magnetMasses = new ArrayList<>();
-        this.measPeakIntensity = new ArrayList<>();
+        List<Double> masses = new ArrayList<>();
+        List<Double> intensity = new ArrayList<>();
 
         int phase = 0;
         for (String line : contentsByLine) {
@@ -61,8 +62,8 @@ public class DataModel {
                     case 1 -> columnNames.add(line.split("\\s*,\\s*"));
                     case 2 -> {
                         String[] cols = line.split("\\s*,\\s*");
-                        magnetMasses.add(Double.parseDouble(cols[0]));
-                        measPeakIntensity.add(Double.parseDouble(cols[1]));
+                        masses.add(Double.parseDouble(cols[0]));
+                        intensity.add(Double.parseDouble(cols[1]));
                     }
                 }
 
@@ -74,20 +75,33 @@ public class DataModel {
             }
         }
 
+
         this.detectorName = headerLine.get(1)[1];
         this.MassID = headerLine.get(2)[1];
         this.peakCenterMass = Double.parseDouble(headerLine.get(4)[1]);
-        this.integPeriodMS = headerLine.get(10)[1];
+        this.integPeriodMS = headerLine.get(10)[1].replaceFirst("ms", "");
+        double[][] magMasses = new double[masses.size()][1];
+        double[][] mPeakIntensity = new double[intensity.size()][1];
+
+        for (int i = 0; i < masses.size(); i++) {
+            magMasses[i][0] = masses.get(i);
+        }
+        for (int i = 0; i < intensity.size(); i++) {
+            mPeakIntensity[i][0] = intensity.get(i);
+        }
+
+        magnetMasses = new Matrix(magMasses);
+        measPeakIntensity = new Matrix(mPeakIntensity);
 
 
     }
 
     public void calcCollectorWidthAMU(MassSpecModel massSpec) {
-        collectorWidthAMU = peakCenterMass / (massSpec.getEffectiveRadiusMagnetMM() * massSpec.getCollectorWidthMM());
+        collectorWidthAMU = peakCenterMass / massSpec.getEffectiveRadiusMagnetMM() * massSpec.getCollectorWidthMM();
     }
 
     public void calcBeamWidthAMU(MassSpecModel massSpec) {
-        theoreticalBeamWidthAMU = peakCenterMass / (massSpec.getEffectiveRadiusMagnetMM() * massSpec.getTheoreticalBeamWidthMM());
+        theoreticalBeamWidthAMU = peakCenterMass / massSpec.getEffectiveRadiusMagnetMM() * massSpec.getTheoreticalBeamWidthMM();
     }
 
     public double getCollectorWidthAMU() {
@@ -102,11 +116,11 @@ public class DataModel {
         return theoreticalBeamWidthAMU;
     }
 
-    public List<Double> getMagnetMasses() {
+    public Matrix getMagnetMasses() {
         return magnetMasses;
     }
 
-    public List<Double> getMeasPeakIntensity() {
+    public Matrix getMeasPeakIntensity() {
         return measPeakIntensity;
     }
 
@@ -120,5 +134,13 @@ public class DataModel {
 
     public String getMassID() {
         return MassID;
+    }
+
+    public void setMagnetMasses(Matrix magnetMasses) {
+        this.magnetMasses = magnetMasses;
+    }
+
+    public void setMeasPeakIntensity(Matrix measPeakIntensity) {
+        this.measPeakIntensity = measPeakIntensity;
     }
 }

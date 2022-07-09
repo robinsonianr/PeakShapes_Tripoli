@@ -9,7 +9,7 @@ Baseline, -0.035294
 DetThreshold, -0.034356
 DeltaMass, 0.258005
 IntegPeriod, ms100
-
+#START
 Mass, Intensity
 85.74354, -0.03586054
 85.74921, -0.03530502

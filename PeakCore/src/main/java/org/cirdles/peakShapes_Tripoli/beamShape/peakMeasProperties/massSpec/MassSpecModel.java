@@ -17,12 +17,17 @@ public class MassSpecModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 123455665660201L;
 
-    private String massSpecName;
+    private final String massSpecName;
 
 
     private MassSpecModel(String massSpecName) {
         this.massSpecName = massSpecName;
-        MatLab matLab = new MatLab();
+        initializeMassSpecModel(massSpecName);
+
+    }
+
+
+    public void initializeMassSpecModel(String massSpecName) {
 
         switch (massSpecName) {
             case "PhoenixKansas_1e12" -> {
@@ -31,7 +36,7 @@ public class MassSpecModel implements Serializable {
                 this.effectiveRadiusMagnetMM = 540;
                 this.faradayNames = new String[]{"L5", "L4", "L3", "L2", "Ax", "H1", "H2", "H3", "H4"};
                 this.ionCounterNames = new String[]{"PM", "SEM"};
-                this.amplifierResistance = matLab.multMatrix(matLab.ones(1, 9), 1e12);
+                this.amplifierResistance = MatLab.multMatrix(MatLab.ones(1, 9), 1e12);
             }
             case "PhoenixKansas_1e11" -> {
                 this.collectorWidthMM = 0.95135;
@@ -39,11 +44,10 @@ public class MassSpecModel implements Serializable {
                 this.effectiveRadiusMagnetMM = 540;
                 this.faradayNames = new String[]{"L5", "L4", "L3", "L2", "Ax", "H1", "H2", "H3", "H4"};
                 this.ionCounterNames = new String[]{"PM", "SEM"};
-                this.amplifierResistance = matLab.multMatrix(matLab.ones(1, 9), 1e11);
+                this.amplifierResistance = MatLab.multMatrix(MatLab.ones(1, 9), 1e11);
             }
             case "" -> System.out.println("Mass spectrometer not recognized");
         }
-
     }
 
 
