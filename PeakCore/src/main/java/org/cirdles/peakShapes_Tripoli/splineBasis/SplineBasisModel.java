@@ -80,9 +80,9 @@ public class SplineBasisModel {
         double xUpper;
 
 
-        xLower = ((xl > x.get(0, 0))) ? x.get(0, 0) : xl;
+        xLower = xl > x.get(0, 0) ? x.get(0, 0) : xl;
 
-        xUpper = (xr < x.get(x.getRowDimension() - 1, x.getColumnDimension() - 1)) ? x.get(x.getRowDimension() - 1, x.getColumnDimension() - 1) : xr;
+        xUpper = xr < x.get(x.getRowDimension() - 1, x.getColumnDimension() - 1) ? x.get(x.getRowDimension() - 1, x.getColumnDimension() - 1) : xr;
 
 
         double dx = (xUpper - xLower) / numSegments;

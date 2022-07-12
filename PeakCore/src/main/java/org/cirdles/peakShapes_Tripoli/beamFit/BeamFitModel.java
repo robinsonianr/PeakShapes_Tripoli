@@ -5,7 +5,7 @@ import org.cirdles.peakShapes_Tripoli.splineBasis.SplineBasisModel;
 
 public class BeamFitModel {
 
-    private BeamFitModel(DataModel data, SplineBasisModel splineBasis){
+    private BeamFitModel(DataModel data, SplineBasisModel splineBasis) {
 
     }
 }

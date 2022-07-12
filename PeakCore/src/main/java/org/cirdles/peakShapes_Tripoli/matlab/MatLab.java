@@ -2,6 +2,9 @@ package org.cirdles.peakShapes_Tripoli.matlab;
 
 import jama.Matrix;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MatLab {
 
     // Kronecker product of 2 arrays
@@ -71,61 +74,6 @@ public class MatLab {
         }
 
         return newOne;
-    }
-
-    // matlab subtract matrices
-    public static double[][] subtract(double[][] A, double[][] B) {
-//            int rowSize = Math.min(A.length, B.length);
-//            int colSize = Math.min(A[0].length, B[0].length);
-//            double[][] C = new double[A.length][A[0].length];
-//            for (int i = 0; i < rowSize; i++){
-//                for (int j =0; j < colSize; j++){
-//                    C[i][j] = A[i][j] - B[i][j];
-//                }
-//            }
-        int rowA = A.length;
-        int colA = A[0].length;
-        int rowB = B.length;
-        int colB = B[0].length;
-        if (colA == colB && rowA == rowB && rowB == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    C[i][j] = A[i][j] - B[i][j];
-                }
-            }
-            return C;
-        } else if (rowA == 1 && rowA == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    C[i][j] = A[0][j] - B[i][0];
-                }
-            }
-            return C;
-        } else if (colA == 1 && colA == rowB) {
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    C[i][j] = A[i][0] - B[0][j];
-                }
-            }
-            return C;
-        } else {
-            double sum;
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    sum = 0;
-                    for (int l = 0; l < rowB; l++) {
-                        sum += A[i][l] - B[l][j];
-                    }
-                    C[i][j] = sum;
-                }
-            }
-            return C;
-        }
-
     }
 
     // matlab set matrix to degree
@@ -226,17 +174,6 @@ public class MatLab {
         return A;
     }
 
-    public static Matrix divMatrix(Matrix mat, double divide) {
-        double[][] A = mat.getArray();
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[0].length; j++) {
-                A[i][j] /= divide;
-            }
-        }
-
-        return new Matrix(A);
-    }
-
     // matlab eye
     public static double[][] eye(int size) {
         double[][] newEye = new double[size][size];
@@ -317,22 +254,6 @@ public class MatLab {
                 }
             }
         }
-//        for (i = 0; i < maxRow; i++){
-//            while (j < (Math.min(mat1[0].length, mat2[0].length))) {
-//                if (mat1[i][j] >= mat2[i][j]){
-//                    ge[i][j] = 1;
-//                }else {
-//                    ge[i][j] = 0;
-//                }
-//                j++;
-//            }
-//
-//            for (j = (Math.min(mat1[0].length, mat2[0].length)); j < maxCol; j++ ){
-//                ge[i][j] = 0;
-//            }
-//
-//        }
-
         return ge;
     }
 
@@ -468,76 +389,6 @@ public class MatLab {
         return zeroMat;
     }
 
-    public static double[][] zeros(int size) {
-        double[][] zeroMat = new double[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                zeroMat[i][j] = 0;
-            }
-        }
-
-        return zeroMat;
-    }
-
-    public static double[][] andMatrix(double[][] A, double[][] B) {
-        int rowA = A.length;
-        int colA = A[0].length;
-        int rowB = B.length;
-        int colB = B[0].length;
-        if (colA == colB && rowA == rowB && rowB == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    if (A[i][j] > 0 && B[i][j] > 0) {
-                        C[i][j] = 1;
-                    } else {
-                        C[i][j] = 0;
-                    }
-
-                }
-            }
-            return C;
-        } else if (rowA == 1 && rowA == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    if (A[0][j] > 0 && B[i][0] > 0) {
-                        C[i][j] = 1;
-                    } else {
-                        C[i][j] = 0;
-                    }
-                }
-            }
-            return C;
-        } else if (colA == 1 && colA == rowB) {
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    if (A[i][0] > 0 && B[0][j] > 0) {
-                        C[i][j] = 1;
-                    } else {
-                        C[i][j] = 0;
-                    }
-
-                }
-            }
-            return C;
-        } else {
-            double sum;
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    sum = 0;
-                    for (int l = 0; l < rowB; l++) {
-                        sum += A[i][l] * B[l][j];
-                    }
-                    C[i][j] = sum;
-                }
-            }
-            return C;
-        }
-    }
-
     public static double[][] find(double[][] mat, int num, String dir) {
         double[][] found = new double[num][1];
         int numCheck = 0;
@@ -637,16 +488,6 @@ public class MatLab {
         return divMat;
     }
 
-    public static Matrix rDivide(Matrix A, double div) {
-        double[][] divMat = new double[A.getRowDimension()][A.getColumnDimension()];
-        for (int i = 0; i < A.getArray().length; i++) {
-            for (int j = 0; j < A.getArray()[0].length; j++) {
-                divMat[i][j] = div / A.get(i, j);
-            }
-        }
-
-        return new Matrix(divMat);
-    }
 
     public static double[][] max(double[][] matrix, int dim) {
         double[][] maxMat = new double[matrix.length][matrix[0].length];
@@ -677,98 +518,7 @@ public class MatLab {
         return diagMat;
     }
 
-    public static double[][] mLDivide(double[][] A, double[][] B) {
-        int rowA = A.length;
-        int colA = A[0].length;
-        int rowB = B.length;
-        int colB = B[0].length;
-        if (colA == colB && rowA == rowB && rowB == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    C[i][j] = A[i][j] / B[i][j];
-                }
-            }
-            return C;
-        } else if (rowA == 1 && rowA == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    C[i][j] = A[0][j] / B[i][0];
-                }
-            }
-            return C;
-        } else if (colA == 1 && colA == rowB) {
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    C[i][j] = A[i][0] / B[0][j];
-                }
-            }
-            return C;
-        } else {
-            double sum;
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    sum = 0;
-                    for (int l = 0; l < rowB; l++) {
-                        sum += A[i][l] / B[l][j];
-                    }
-                    C[i][j] = sum;
-                }
-            }
-            return C;
-        }
-    }
 
-    public static Matrix mLDivide(Matrix matA, Matrix matB) {
-        double[][] A = matA.getArray();
-        double[][] B = matB.getArray();
-
-        int rowA = A.length;
-        int colA = A[0].length;
-        int rowB = B.length;
-        int colB = B[0].length;
-        if (colA == colB && rowA == rowB && rowB == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    C[i][j] = A[i][j] / B[i][j];
-                }
-            }
-            return new Matrix(C);
-        } else if (rowA == 1 && rowA == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    C[i][j] = A[0][j] / B[i][0];
-                }
-            }
-            return new Matrix(C);
-        } else if (colA == 1 && colA == rowB) {
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    C[i][j] = A[i][0] / B[0][j];
-                }
-            }
-            return new Matrix(C);
-        } else {
-            double sum;
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    sum = 0;
-                    for (int l = 0; l < rowB; l++) {
-                        sum += A[i][l] / B[l][j];
-                    }
-                    C[i][j] = sum;
-                }
-            }
-            return new Matrix(C);
-        }
-    }
 
     public static Matrix concatMatrix(Matrix A, Matrix B) {
         Matrix concated = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getColumnDimension());
@@ -825,9 +575,94 @@ public class MatLab {
             }
 
         }
-
-
         return diag;
+    }
 
+    // * Copyright 2008 Josh Vermaas, except he's nice and instead prefers
+    // * this to be licensed under the LGPL. Since the license itself is longer
+    // * than the code, if this truly worries you, you can look up the text at
+    // * http://www.gnu.org/licenses/
+    public static Matrix solveNNLS(Matrix A, Matrix b) {
+        List<Integer> p = new ArrayList<Integer>();
+        List<Integer> z = new ArrayList<Integer>();
+        int i = 0;
+        int xm = A.getColumnDimension();
+        int xn = 1;
+        while (i < A.getColumnDimension())
+            z.add(i++);
+        Matrix x = new Matrix(xm, xn);
+        /*
+         * You need a finite number of iterations. Without this condition, the finite precision nature
+         * of the math being done almost makes certain that the <1e-15 conditions won't ever hold up.
+         * However, after so many iterations, it should at least be close to the correct answer.
+         * For the intrepid coder, however, one could replace this again with an infinite while
+         * loop and make the <1e-15 conditions into something like c*norm(A) or c*norm(b).
+         */
+        for (int iterations = 0; iterations < 300 * A.getColumnDimension() * A.getRowDimension(); iterations++) {
+            //System.out.println(z.size() + " " + p.size());
+            Matrix w = A.transpose().times(b.minus(A.times(x)));
+            //w.print(7, 5);
+            if (z.size() == 0 || isAllNegative(w)) {
+                //System.out.println("Computation should break");
+                //We are done with the computation. Break here!
+                break;//Should break out of the outer while loop.
+            }
+            //Step 4
+            int t = z.get(0);
+            double max = w.get(t, 0);
+            for (i = 1; i < z.size(); i++) {
+                if (w.get(z.get(i), 0) > max) {
+                    t = z.get(i);
+                    max = w.get(z.get(i), 0);
+                }
+            }
+            //Step 5
+            p.add(t);
+            z.remove((Integer) t);
+            boolean allPositive = false;
+            while (!allPositive) {
+                //Step 6
+                Matrix Ep = new Matrix(b.getRowDimension(), p.size());
+                for (i = 0; i < p.size(); i++)
+                    for (int j = 0; j < Ep.getRowDimension(); j++)
+                        Ep.set(j, i, A.get(j, p.get(i)));
+                Matrix Zprime = Ep.solve(b);
+                Ep = null;
+                Matrix Z = new Matrix(xm, xn);
+                for (i = 0; i < p.size(); i++)
+                    Z.set(p.get(i), 0, Zprime.get(i, 0));
+                //Step 7
+                allPositive = true;
+                for (i = 0; i < p.size(); i++)
+                    allPositive &= Z.get(p.get(i), 0) > 0;
+                if (allPositive)
+                    x = Z;
+                else {
+                    double alpha = Double.MAX_VALUE;
+                    for (i = 0; i < p.size(); i++) {
+                        int q = p.get(i);
+                        if (Z.get(q, 0) <= 0) {
+                            double xq = x.get(q, 0);
+                            if (xq / (xq - Z.get(q, 0)) < alpha)
+                                alpha = xq / (xq - Z.get(q, 0));
+                        }
+                    }
+                    //Finished getting alpha. Onto step 10
+                    x = x.plus(Z.minus(x).times(alpha));
+                    for (i = p.size() - 1; i >= 0; i--)
+                        if (Math.abs(x.get(p.get(i), 0)) < 1e-15)//Close enough to zero, no?
+                            z.add(p.remove(i));
+                }
+            }
+        }
+        return x;
+    }
+
+    private static boolean isAllNegative(Matrix w) {
+        boolean result = true;
+        int m = w.getRowDimension();
+        for (int i = 0; i < m; i++)
+            result &= w.get(i, 0) <= 1e-15;
+        return result;
     }
 }
