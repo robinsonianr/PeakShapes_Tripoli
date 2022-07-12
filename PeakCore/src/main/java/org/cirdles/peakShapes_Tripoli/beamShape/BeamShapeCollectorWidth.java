@@ -10,8 +10,6 @@ import org.cirdles.peakShapes_Tripoli.splineBasis.SplineBasisModel;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BeamShapeCollectorWidth {
     DataModel data;
@@ -19,7 +17,7 @@ public class BeamShapeCollectorWidth {
     MassSpecModel massSpec;
 
     private double maxBeam, maxBeamIndex, thesholdIntensity, leftBoundary, rightBoundary, measBeamWidthAMU, measBeamWidthMM;
-    private Matrix peakLeft, leftAboveTheshold, leftThesholdChange, peakRight, rightAboveThreshold, rightThesholdChange;
+    private Matrix peakLeft, leftAboveTheshold, leftThesholdChange, peakRight, rightAboveThreshold, rightThesholdChange, beamShape, beamMassInterp;
 
 
     public BeamShapeCollectorWidth(Path fileName, MassSpecModel massSpec) throws IOException {
@@ -33,8 +31,8 @@ public class BeamShapeCollectorWidth {
     }
 
     public void calcBeamShapeCollectorWidth() {
-        Matrix Basis, GB, WData, BeamWLS, TrimGMatrix, TrimMagnetMasses, peakMassIntensity, magnetMasses, matrixD,
-                beamShape, BeamWNNLS, test1, test2, test3, test4, Gaugmented, measAugmented, wtsAugmented, beamPSpline, beamNNPspl, gAugmentedTest;
+        Matrix Basis, GB, WData, BeamWLS, TrimGMatrix, TrimMagnetMasses, matrixD, BeamWNNLS, test1, test2,
+                test3, test4, gAugmented, measAugmented, wtsAugmented, beamPSpline, beamNNPspl;
 
         // Spline basis Basis
 
@@ -47,7 +45,7 @@ public class BeamShapeCollectorWidth {
         double xUpper = data.getPeakCenterMass() + peakMeas.getBeamWindow() / 2;
 
 
-        Matrix beamMassInterp = new Matrix(MatLab.linspace(xLower, xUpper, nInterp));
+        this.beamMassInterp = new Matrix(MatLab.linspace(xLower, xUpper, nInterp));
         Basis = SplineBasisModel.bBase(beamMassInterp, xLower, xUpper, beamKnots, basisDegree);
         double deltaBeamMassInterp = beamMassInterp.get(0, 1) - beamMassInterp.get(0, 0);
 
@@ -57,6 +55,7 @@ public class BeamShapeCollectorWidth {
 
         int numMagnetMasses = data.getMagnetMasses().getRowDimension();
         Matrix gMatrix = new Matrix(MatLab.zeros(numMagnetMasses, nInterp));
+
 
         for (int iMass = 0; iMass < numMagnetMasses; iMass++) {
             Matrix massesInCollector = new Matrix(MatLab.greatEqual(beamMassInterp.getArray(), peakMeas.getCollectorLimits().get(iMass, 0))).arrayTimes(new Matrix(MatLab.lessEqual(beamMassInterp.getArray(), peakMeas.getCollectorLimits().get(iMass, 1))));
@@ -120,33 +119,29 @@ public class BeamShapeCollectorWidth {
         data.setMeasPeakIntensity(new Matrix(trimPeakIntensity));
 
 
-        peakMassIntensity = data.getMeasPeakIntensity();
-        magnetMasses = data.getMagnetMasses();
-
-
         // WLS and NNLS
         GB = TrimGMatrix.times(Basis);
         WData = new Matrix(MatLab.diag(MatLab.rDivide(MatLab.max(data.getMeasPeakIntensity().getArray(), 1), 1)));
-        BeamWLS = (GB.transpose().times(WData.times(GB))).inverse().times((GB.transpose().times(WData.times(peakMassIntensity))));
+        BeamWLS = (GB.transpose().times(WData.times(GB))).inverse().times((GB.transpose().times(WData.times(data.getMeasPeakIntensity()))));
         test1 = new Matrix(WData.chol().getL().getArray()).times(GB);
-        test2 = new Matrix(WData.chol().getL().getArray()).times(peakMassIntensity);
+        test2 = new Matrix(WData.chol().getL().getArray()).times(data.getMeasPeakIntensity());
         BeamWNNLS = MatLab.solveNNLS(test1, test2);
 
         // Smoothing spline
         double lambda = 1e-11;
         matrixD = new Matrix(MatLab.diff(MatLab.eye((int) (beamKnots + basisDegree)), orderDiff));
 
-        Matrix lamdaD = matrixD.times(Math.sqrt(lambda));
-        Gaugmented = MatLab.concatMatrix(GB, lamdaD);
+        Matrix lambdaD = matrixD.times(Math.sqrt(lambda));
+        gAugmented = MatLab.concatMatrix(GB, lambdaD);
         measAugmented = MatLab.concatMatrix(data.getMeasPeakIntensity(), new Matrix(MatLab.zeros((int) beamKnots + basisDegree - orderDiff, 1)));
         wtsAugmented = MatLab.blkDiag(WData, new Matrix(MatLab.eye((int) beamKnots + basisDegree - orderDiff)));
-        beamPSpline = Gaugmented.transpose().times(wtsAugmented.times(Gaugmented)).inverse().times(Gaugmented.transpose().times(wtsAugmented.times(measAugmented)));
-        test3 = new Matrix(wtsAugmented.chol().getL().getArray()).times(Gaugmented);
+        beamPSpline = gAugmented.transpose().times(wtsAugmented.times(gAugmented)).inverse().times(gAugmented.transpose().times(wtsAugmented.times(measAugmented)));
+        test3 = new Matrix(wtsAugmented.chol().getL().getArray()).times(gAugmented);
         test4 = new Matrix(wtsAugmented.chol().getL().getArray()).times(measAugmented);
         beamNNPspl = MatLab.solveNNLS(test3, test4);
 
         // Determine peak width
-        beamShape = Basis.times(BeamWNNLS);
+        this.beamShape = Basis.times(BeamWNNLS);
         this.maxBeam = beamShape.normInf();
         int index = 0;
         for (int i = 0; i < beamShape.getRowDimension(); i++) {
@@ -176,5 +171,30 @@ public class BeamShapeCollectorWidth {
 
     }
 
+
+    public double getMeasBeamWidthAMU() {
+        return measBeamWidthAMU;
+    }
+
+    public double getMeasBeamWidthMM() {
+        return measBeamWidthMM;
+    }
+
+
+    public double getRightBoundary() {
+        return rightBoundary;
+    }
+
+    public double getLeftBoundary() {
+        return leftBoundary;
+    }
+
+    public Matrix getBeamShape() {
+        return beamShape;
+    }
+
+    public Matrix getBeamMassInterp() {
+        return beamMassInterp;
+    }
 
 }
