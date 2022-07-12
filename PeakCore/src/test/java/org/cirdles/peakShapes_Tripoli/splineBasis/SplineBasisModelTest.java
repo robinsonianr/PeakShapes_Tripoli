@@ -1,6 +1,7 @@
 package org.cirdles.peakShapes_Tripoli.splineBasis;
 
 import jama.Matrix;
+import org.cirdles.peakShapes_Tripoli.matlab.MatLab;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,14 +20,10 @@ class SplineBasisModelTest {
 
     @Test
     void bBase() {
-        double[][] A = {{1, 2}, {3, 4}, {1, 0}};
-        double[][] B = {{0, 5, 2}, {6, 7, 3}};
-        double[][] vector = {{4}, {1}, {3}, {2}};
-        double[][] vector2 = {{3.0, 1.0, 3}, {3, 2, 8}};
-        double[][] testArr = {{1, 3, 5}, {7, 11, 13}, {17, 19, 23}};
-        SplineBasisModel base = SplineBasisModel.initializeSpline(new Matrix(B), 500, 3);
+        Matrix splineTest = new Matrix(MatLab.linspace(204.8507, 205.1165, 1000));
+        SplineBasisModel base = SplineBasisModel.initializeSpline(splineTest, 22, 3);
 
 
-        System.out.println(base.getBSplineMatrix());
+        System.out.println(Arrays.deepToString(base.getBSplineMatrix().getArray()));
     }
 }
