@@ -519,7 +519,6 @@ public class MatLab {
     }
 
 
-
     public static Matrix concatMatrix(Matrix A, Matrix B) {
         Matrix concated = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getColumnDimension());
         int indexBRow = 0;

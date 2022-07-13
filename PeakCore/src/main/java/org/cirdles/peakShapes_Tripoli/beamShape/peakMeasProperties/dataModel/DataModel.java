@@ -21,7 +21,6 @@ public class DataModel {
     private double collectorWidthAMU;       // width of collector aperture in AMU at center mass
     private double theoreticalBeamWidthAMU; // width of beam in AMU at center mass
 
-
     public DataModel(Path inputFile) throws IOException {
         List<String> contentsByLine = new ArrayList<>(Files.readAllLines(inputFile, Charset.defaultCharset()));
 
@@ -66,8 +65,8 @@ public class DataModel {
             mPeakIntensity[i][0] = intensity.get(i);
         }
 
-        this.magnetMasses = new Matrix(magMasses);
-        this.measPeakIntensity = new Matrix(mPeakIntensity);
+        magnetMasses = new Matrix(magMasses);
+        measPeakIntensity = new Matrix(mPeakIntensity);
 
 
     }
