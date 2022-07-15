@@ -1,6 +1,5 @@
 package org.cirdles.peakShapes_Tripoli.beamShape;
 
-
 import jama.Matrix;
 import org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.PeakMeas;
 import org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.dataModel.DataModel;
@@ -12,34 +11,21 @@ import org.cirdles.peakShapes_Tripoli.visualizationUtilities.Histogram;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class BeamShapeCollectorWidth {
-    DataModel data;
-    PeakMeas peakMeas;
-    MassSpecModel massSpec;
+public class BeamDataOutput {
 
-    private double leftBoundary;
-    private double rightBoundary;
-    private double measBeamWidthAMU;
-    private double measBeamWidthMM;
-    private Matrix beamShape;
-    private Matrix beamMassInterp;
-    private Matrix TrimGMatrix;
-
-
-    public BeamShapeCollectorWidth(Path fileName, MassSpecModel massSpec) throws IOException {
-        data = new DataModel(fileName);
-        this.massSpec = massSpec;
+    public static Histogram modelTest(Path dataFile) throws IOException {
+        DataModel data = new DataModel(dataFile);
+        MassSpecModel massSpec = MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
         data.calcCollectorWidthAMU(massSpec);
         data.calcBeamWidthAMU(massSpec);
-        peakMeas = PeakMeas.initializePeakMeas(data, massSpec);
 
-
+        return gatherBeamWidth(massSpec, data);
     }
 
 
+    static Histogram gatherBeamWidth(MassSpecModel massSpec, DataModel data) {
+        PeakMeas peakMeas = PeakMeas.initializePeakMeas(data, massSpec);
 
-
-    public  void calcBeamShapeCollectorWidth() {
 
         double maxBeam, maxBeamIndex, thesholdIntensity;
         // Spline basis Basis
@@ -53,7 +39,7 @@ public class BeamShapeCollectorWidth {
         double xUpper = data.getPeakCenterMass() + peakMeas.getBeamWindow() / 2;
 
 
-        this.beamMassInterp = new Matrix(MatLab.linspace(xLower, xUpper, nInterp));
+        Matrix beamMassInterp = new Matrix(MatLab.linspace(xLower, xUpper, nInterp));
         Matrix Basis = SplineBasisModel.bBase(beamMassInterp, xLower, xUpper, beamKnots, basisDegree);
         double deltaBeamMassInterp = beamMassInterp.get(0, 1) - beamMassInterp.get(0, 0);
 
@@ -101,7 +87,7 @@ public class BeamShapeCollectorWidth {
                 j++;
             }
         }
-        TrimGMatrix = new Matrix(trimGMatrix);
+        Matrix TrimGMatrix = new Matrix(trimGMatrix);
 
         double[][] trimMagnetMasses = new double[newDataSet][data.getMagnetMasses().getRowDimension()];
         int h = 0;
@@ -147,7 +133,7 @@ public class BeamShapeCollectorWidth {
         Matrix beamNNPspl = MatLab.solveNNLS(test3, test4);
 
         // Determine peak width
-        this.beamShape = Basis.times(BeamWNNLS);
+        Matrix beamShape = Basis.times(BeamWNNLS);
         maxBeam = beamShape.normInf();
         maxBeamIndex = 0;
         int index = 0;
@@ -165,45 +151,28 @@ public class BeamShapeCollectorWidth {
         Matrix peakLeft = beamShape.getMatrix(0, (int) maxBeamIndex - 1, 0, 0);
         Matrix leftAboveTheshold = new Matrix(MatLab.greaterThan(peakLeft.getArray(), thesholdIntensity));
         Matrix leftThesholdChange = leftAboveTheshold.getMatrix(1, leftAboveTheshold.getRowDimension() - 1, 0, 0).minus(leftAboveTheshold.getMatrix(0, leftAboveTheshold.getRowDimension() - 2, 0, 0));
-        this.leftBoundary = MatLab.find(leftThesholdChange.getArray(), 1, "last")[0][0] + 1;
+        double leftBoundary = MatLab.find(leftThesholdChange.getArray(), 1, "last")[0][0] + 1;
 
 
         Matrix peakRight = beamShape.getMatrix((int) maxBeamIndex, beamShape.getRowDimension() - 1, 0, 0);
         Matrix rightAboveThreshold = new Matrix(MatLab.greaterThan(peakRight.getArray(), thesholdIntensity));
         Matrix rightThesholdChange = rightAboveThreshold.getMatrix(0, rightAboveThreshold.getRowDimension() - 2, 0, 0).minus(rightAboveThreshold.getMatrix(1, rightAboveThreshold.getRowDimension() - 1, 0, 0));
-        this.rightBoundary = MatLab.find(rightThesholdChange.getArray(), 1, "first")[0][0] + maxBeamIndex;
+        double rightBoundary = MatLab.find(rightThesholdChange.getArray(), 1, "first")[0][0] + maxBeamIndex;
 
-        measBeamWidthAMU = beamMassInterp.get(0, (int) rightBoundary) - beamMassInterp.get(0, (int) leftBoundary);
-        measBeamWidthMM = measBeamWidthAMU * massSpec.getEffectiveRadiusMagnetMM() / data.getPeakCenterMass();
+        double measBeamWidthAMU = beamMassInterp.get(0, (int) rightBoundary) - beamMassInterp.get(0, (int) leftBoundary);
+        double measBeamWidthMM = measBeamWidthAMU * massSpec.getEffectiveRadiusMagnetMM() / data.getPeakCenterMass();
+        double[][] ensembleBeam = new double[1][beamShape.getRowDimension() * beamShape.getColumnDimension()];
+        int ensembleIndex = 0;
+        for (int i = 0; i < beamShape.getRowDimension(); i++) {
+            for (int l = 0; l < beamShape.getColumnDimension(); l++) {
+                ensembleBeam[0][ensembleIndex] = beamShape.get(i, l);
+                ensembleIndex++;
+            }
+        }
 
-    }
+        Histogram histogram = Histogram.initializeHistogram(ensembleBeam[0], 20);
+        //TODO add data to descriptive histogram
 
-
-    public double getRightBoundary() {
-        return rightBoundary;
-    }
-
-    public double getLeftBoundary() {
-        return leftBoundary;
-    }
-
-    public Matrix getBeamShape() {
-        return beamShape;
-    }
-
-    public Matrix getBeamMassInterp() {
-        return beamMassInterp;
-    }
-
-    public Matrix getTrimGMatrix() {
-        return TrimGMatrix;
-    }
-
-    public double getMeasBeamWidthMM() {
-        return measBeamWidthMM;
-    }
-
-    public double getMeasBeamWidthAMU() {
-        return measBeamWidthAMU;
+        return histogram;
     }
 }
