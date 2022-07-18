@@ -13,19 +13,19 @@ import java.nio.file.Path;
 
 public class BeamDataOutput {
 
-    public static Histogram modelTest(Path dataFile) throws IOException {
+    public static Histogram modelTest(Path dataFile, String option) throws IOException {
         DataModel data = new DataModel(dataFile);
         MassSpecModel massSpec = MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
         data.calcCollectorWidthAMU(massSpec);
         data.calcBeamWidthAMU(massSpec);
 
-        return gatherBeamWidth(massSpec, data);
+        return gatherBeamWidth(massSpec, data, option);
     }
 
 
-    static Histogram gatherBeamWidth(MassSpecModel massSpec, DataModel data) {
+    static Histogram gatherBeamWidth(MassSpecModel massSpec, DataModel data, String option) {
         PeakMeas peakMeas = PeakMeas.initializePeakMeas(data, massSpec);
-
+        Histogram histogram = null;
 
         double maxBeam, maxBeamIndex, thesholdIntensity;
         // Spline basis Basis
@@ -161,16 +161,39 @@ public class BeamDataOutput {
 
         double measBeamWidthAMU = beamMassInterp.get(0, (int) rightBoundary) - beamMassInterp.get(0, (int) leftBoundary);
         double measBeamWidthMM = measBeamWidthAMU * massSpec.getEffectiveRadiusMagnetMM() / data.getPeakCenterMass();
-        double[][] ensembleBeam = new double[1][beamShape.getRowDimension() * beamShape.getColumnDimension()];
-        int ensembleIndex = 0;
-        for (int i = 0; i < beamShape.getRowDimension(); i++) {
-            for (int l = 0; l < beamShape.getColumnDimension(); l++) {
-                ensembleBeam[0][ensembleIndex] = beamShape.get(i, l);
-                ensembleIndex++;
+
+
+        Matrix gBeam = TrimGMatrix.times(beamShape);
+
+        if (option.equalsIgnoreCase("beamShape")){
+            double[][] ensembleBeam = new double[1][(int)rightBoundary - (int) leftBoundary];
+
+            int ensembleIndex = 0;
+            for (int i = (int)leftBoundary; i < (int) rightBoundary; i++) {
+                for (int l = 0; l < beamShape.getColumnDimension(); l++) {
+                    ensembleBeam[0][ensembleIndex] = beamShape.get(i, l);
+                    ensembleIndex++;
+                }
             }
+            histogram = Histogram.initializeHistogram(ensembleBeam[0], (int)rightBoundary - (int) leftBoundary);
+
+        }else if (option.equalsIgnoreCase("gBeam")){
+            double[][] ensembleGBeam = new double[gBeam.getRowDimension()*gBeam.getColumnDimension()][1];
+
+
+            int ensembleIndex = 0;
+            for (int i = 0; i < gBeam.getRowDimension(); i++) {
+                for (int l = 0; l < gBeam.getColumnDimension(); l++) {
+                    ensembleGBeam[ensembleIndex][0] = gBeam.get(i, l);
+                    ensembleIndex++;
+                }
+            }
+
+            double[][] testGBeam = MatLab.transpose(ensembleGBeam);
+            histogram = Histogram.initializeHistogram(testGBeam[0], gBeam.getRowDimension()*gBeam.getColumnDimension() );
         }
 
-        Histogram histogram = Histogram.initializeHistogram(ensembleBeam[0], 20);
+
         //TODO add data to descriptive histogram
 
         return histogram;

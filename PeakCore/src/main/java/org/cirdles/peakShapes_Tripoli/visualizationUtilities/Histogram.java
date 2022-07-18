@@ -83,4 +83,8 @@ public class Histogram {
     public double[] getBinCenters() {
         return binCenters;
     }
+
+    public double[] getData() {
+        return data;
+    }
 }

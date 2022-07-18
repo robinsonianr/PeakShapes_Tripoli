@@ -8,22 +8,22 @@ import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
-public class BeamPlotWindow {
+public class BeamShapePlotWindow {
     private final double xOffset = 0;
     private final double yOffset = 0;
     public Stage plottingStage;
     public Window plottingWindow;
     private Stage primaryStage;
 
-    private BeamPlotWindow() {
+    private BeamShapePlotWindow() {
     }
 
-    public BeamPlotWindow(Stage primaryStage) {
+    public BeamShapePlotWindow(Stage primaryStage) {
         this.primaryStage = primaryStage;
         plottingStage = new Stage();
-        plottingStage.setMinHeight(500);
+        plottingStage.setMinHeight(550);
         plottingStage.setMinWidth(500);
-        plottingStage.setTitle("Peak Shape Demo Window");
+        plottingStage.setTitle("Beam Shape Demo Window");
 
         plottingStage.setOnCloseRequest((WindowEvent e) -> {
             plottingStage.hide();

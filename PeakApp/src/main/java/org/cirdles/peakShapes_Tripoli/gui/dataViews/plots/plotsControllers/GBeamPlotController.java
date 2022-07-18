@@ -20,7 +20,7 @@ import org.cirdles.peakShapes_Tripoli.visualizationUtilities.Histogram;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class BeamPlotController {
+public class GBeamPlotController {
 
     @FXML
     private AnchorPane plotAnchorPane;
@@ -36,7 +36,7 @@ public class BeamPlotController {
 
     @FXML
     void graphBtn(ActionEvent event) throws IOException{
-        loadBeamPlot("beamShape");
+        loadBeamPlot("gBeam");
         ((Button)event.getSource()).setDisable(true);
 
     }
@@ -45,9 +45,9 @@ public class BeamPlotController {
     @FXML
     void initialize() {
 
-        vBoxControl.setPrefSize(500.0, 650);
+        vBoxControl.setPrefSize(500.0, 500.0);
         toolBar.setPrefSize(500, 20.0);
-        scrollPane.setPrefSize(500.0, 650 - toolBar.getHeight());
+        scrollPane.setPrefSize(500.0, 600.0 - toolBar.getHeight());
         scrollPane.setPrefViewportWidth(485.0);
         scrollPane.setPrefViewportHeight(465.0);
 

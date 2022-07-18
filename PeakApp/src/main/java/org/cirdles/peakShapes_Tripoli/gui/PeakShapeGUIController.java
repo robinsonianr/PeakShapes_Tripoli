@@ -2,24 +2,20 @@ package org.cirdles.peakShapes_Tripoli.gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import org.cirdles.peakShapes_Tripoli.gui.dataViews.plots.BeamPlotWindow;
-
+import org.cirdles.peakShapes_Tripoli.gui.dataViews.plots.BeamShapePlotWindow;
+import org.cirdles.peakShapes_Tripoli.gui.dataViews.plots.GBeamPlotWindow;
 
 
 public class PeakShapeGUIController {
 
-    @FXML
-    private Button histogramBtn;
-
-
-
 
     @FXML
-    void beamDemo(ActionEvent event){
-        BeamPlotWindow beamPlotWindow = new BeamPlotWindow(PeakShapesGUI.primaryStage);
-        beamPlotWindow.loadBeamPlotWindow();
+    void beamDemo(ActionEvent event) {
+        BeamShapePlotWindow beamShapePlotWindow = new BeamShapePlotWindow(PeakShapesGUI.primaryStage);
+        beamShapePlotWindow.loadBeamPlotWindow();
+
+        GBeamPlotWindow gBeamPlotWindow = new GBeamPlotWindow(PeakShapesGUI.primaryStage);
+        gBeamPlotWindow.loadBeamPlotWindow();
     }
-
 
 }

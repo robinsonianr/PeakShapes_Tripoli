@@ -21,7 +21,6 @@ public class PeakShapesGUI extends Application {
     public static void main(String[] args) {
 
 
-
         StringBuilder logo = new StringBuilder();
         logo.append("        _________          _                  __    _   \n");
         logo.append("       |  _   _  |        (_)                [  |  (_)  \n");
@@ -36,7 +35,6 @@ public class PeakShapesGUI extends Application {
     }
 
 
-
     @Override
     public void start(Stage primaryStage) throws IOException {
         PeakShapesGUI.primaryStage = primaryStage;
@@ -47,7 +45,7 @@ public class PeakShapesGUI extends Application {
 
         primaryStageWindow = primaryStage.getScene().getWindow();
 
-        primaryStage.setOnCloseRequest((WindowEvent e) ->{
+        primaryStage.setOnCloseRequest((WindowEvent e) -> {
             Platform.exit();
             System.exit(0);
         });

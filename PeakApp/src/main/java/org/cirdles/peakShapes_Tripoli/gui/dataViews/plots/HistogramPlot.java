@@ -14,6 +14,7 @@ import org.cirdles.peakShapes_Tripoli.visualizationUtilities.Histogram;
 public class HistogramPlot extends AbstractDataView {
 
     private Histogram histogram;
+    private double[] xDataAxis;
 
     /**
      * @param bounds
@@ -27,10 +28,15 @@ public class HistogramPlot extends AbstractDataView {
     public void preparePanel() {
 
         xAxisData = histogram.getBinCenters();
-        minX = xAxisData[0];
-        maxX = xAxisData[xAxisData.length - 1];
+        xDataAxis = new double[xAxisData.length];
 
-        yAxisData = histogram.getBinCounts();
+        for (int i = 0; i < xAxisData.length; i++) {
+            xDataAxis[i] = i;
+        }
+        minX = xDataAxis[0];
+        maxX = xDataAxis[xDataAxis.length - 1];
+
+        yAxisData = histogram.getData();
         minY = Double.MAX_VALUE;
         maxY = -Double.MAX_VALUE;
 
@@ -54,31 +60,31 @@ public class HistogramPlot extends AbstractDataView {
 
         g2d.setFont(Font.font("SansSerif", FontWeight.SEMI_BOLD, 15));
         g2d.setFill(Paint.valueOf("RED"));
-        g2d.fillText("Histogram", 20, 20);
+        g2d.fillText("Line Graph", 20, 20);
 
         // plot bins
         g2d.setLineWidth(2.0);
-        for (int i = 0; i < xAxisData.length; i++) {
-            System.err.println(mapX(xAxisData[i] - histogram.getBinWidth() / 2.0) + "    " + mapY(yAxisData[i]) + "   " + mapX(xAxisData[i] + histogram.getBinWidth()) + "   " + mapY(yAxisData[i]));
-            g2d.fillRect(
-                    mapX(xAxisData[i] - histogram.getBinWidth() / 2.0),
-                    mapY(yAxisData[i]),
-                    mapX(xAxisData[1]) - mapX(xAxisData[0]),
-                    mapY(0.0) - mapY(yAxisData[i]));
-        }
+//        for (int i = 0; i < xDataAxis.length; i++) {
+//            System.err.println(mapX(xDataAxis[i] - histogram.getBinWidth() / 2.0) + "    " + mapY(yAxisData[i]) + "   " + mapX(xAxisData[i] + histogram.getBinWidth()) + "   " + mapY(yAxisData[i]));
+//            g2d.fillRect(
+//                    mapX(xDataAxis[i]),
+//                    mapY(yAxisData[i]),
+//                    mapX(xDataAxis[1]) - mapX(xDataAxis[0]),
+//                    mapY(0.0) - mapY(yAxisData[i]));
+//        }
 
-        g2d.setStroke(Paint.valueOf("BLACK"));
-        for (int i = 0; i < xAxisData.length; i++) {
-            g2d.strokeLine(mapX(xAxisData[i]), mapY(0.0), mapX(xAxisData[i]), mapY(yAxisData[i]));
-        }
+//        g2d.setStroke(Paint.valueOf("BLACK"));
+//        for (int i = 0; i < xDataAxis.length; i++) {
+//            g2d.strokeLine(mapX(xDataAxis[i]), mapY(0.0), mapX(xDataAxis[i]), mapY(yAxisData[i]));
+//        }
 
         // plot line for giggles
-        g2d.setStroke(Paint.valueOf("BLACK"));
+        g2d.setStroke(Paint.valueOf("Black"));
         g2d.beginPath();
-        g2d.moveTo(mapX(xAxisData[0]), mapY(yAxisData[0]));
-        for (int i = 0; i < xAxisData.length; i++) {
+        g2d.moveTo(mapX(xDataAxis[0]), mapY(yAxisData[0]));
+        for (int i = 0; i < xDataAxis.length; i++) {
             // line tracing through points
-            g2d.lineTo(mapX(xAxisData[i]), mapY(yAxisData[i]));
+            g2d.lineTo(mapX(xDataAxis[i]), mapY(yAxisData[i]));
         }
         g2d.stroke();
     }
