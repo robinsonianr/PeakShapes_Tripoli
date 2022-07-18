@@ -45,11 +45,11 @@ public class GBeamPlotController {
     @FXML
     void initialize() {
 
-        vBoxControl.setPrefSize(500.0, 500.0);
+        vBoxControl.setPrefSize(500.0, 600.0);
         toolBar.setPrefSize(500, 20.0);
         scrollPane.setPrefSize(500.0, 600.0 - toolBar.getHeight());
         scrollPane.setPrefViewportWidth(485.0);
-        scrollPane.setPrefViewportHeight(465.0);
+        scrollPane.setPrefViewportHeight(550.0);
 
         vBoxControl.prefWidthProperty().bind(plotAnchorPane.widthProperty());
         vBoxControl.prefHeightProperty().bind(plotAnchorPane.heightProperty());

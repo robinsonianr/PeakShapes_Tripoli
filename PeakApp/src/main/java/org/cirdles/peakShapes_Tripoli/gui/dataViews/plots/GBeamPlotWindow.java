@@ -47,7 +47,7 @@ public class GBeamPlotWindow {
         }
 
         // center on app window
-        plottingStage.setX(primaryStage.getX() + (primaryStage.getWidth() - plottingStage.getWidth()) / 2);
+        plottingStage.setX(primaryStage.getX() + (primaryStage.getWidth() - plottingStage.getWidth()) * 2);
         plottingStage.setY(primaryStage.getY() + (primaryStage.getHeight() - plottingStage.getHeight()) / 2);
         plottingStage.requestFocus();
     }
