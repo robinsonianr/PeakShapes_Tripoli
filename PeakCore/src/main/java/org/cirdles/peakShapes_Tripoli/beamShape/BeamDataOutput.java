@@ -13,6 +13,11 @@ import java.nio.file.Path;
 
 public class BeamDataOutput {
 
+    private static double[] massData;
+    private static double[] intensityData;
+    private static double leftBoundary;
+    private static double rightBoundary;
+
     public static Histogram modelTest(Path dataFile, String option) throws IOException {
         DataModel data = new DataModel(dataFile);
         MassSpecModel massSpec = MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
@@ -110,6 +115,8 @@ public class BeamDataOutput {
 
         data.setMagnetMasses(new Matrix(trimMagnetMasses));
         data.setMeasPeakIntensity(new Matrix(trimPeakIntensity));
+        massData = MatLab.transpose(trimMagnetMasses)[0];
+        intensityData = MatLab.transpose(trimPeakIntensity)[0];
 
 
         // WLS and NNLS
@@ -151,13 +158,13 @@ public class BeamDataOutput {
         Matrix peakLeft = beamShape.getMatrix(0, (int) maxBeamIndex - 1, 0, 0);
         Matrix leftAboveTheshold = new Matrix(MatLab.greaterThan(peakLeft.getArray(), thesholdIntensity));
         Matrix leftThesholdChange = leftAboveTheshold.getMatrix(1, leftAboveTheshold.getRowDimension() - 1, 0, 0).minus(leftAboveTheshold.getMatrix(0, leftAboveTheshold.getRowDimension() - 2, 0, 0));
-        double leftBoundary = MatLab.find(leftThesholdChange.getArray(), 1, "last")[0][0] + 1;
+        leftBoundary = MatLab.find(leftThesholdChange.getArray(), 1, "last")[0][0] + 1;
 
 
         Matrix peakRight = beamShape.getMatrix((int) maxBeamIndex, beamShape.getRowDimension() - 1, 0, 0);
         Matrix rightAboveThreshold = new Matrix(MatLab.greaterThan(peakRight.getArray(), thesholdIntensity));
         Matrix rightThesholdChange = rightAboveThreshold.getMatrix(0, rightAboveThreshold.getRowDimension() - 2, 0, 0).minus(rightAboveThreshold.getMatrix(1, rightAboveThreshold.getRowDimension() - 1, 0, 0));
-        double rightBoundary = MatLab.find(rightThesholdChange.getArray(), 1, "first")[0][0] + maxBeamIndex;
+        rightBoundary = MatLab.find(rightThesholdChange.getArray(), 1, "first")[0][0] + maxBeamIndex;
 
         double measBeamWidthAMU = beamMassInterp.get(0, (int) rightBoundary) - beamMassInterp.get(0, (int) leftBoundary);
         double measBeamWidthMM = measBeamWidthAMU * massSpec.getEffectiveRadiusMagnetMM() / data.getPeakCenterMass();
@@ -165,37 +172,31 @@ public class BeamDataOutput {
 
         Matrix gBeam = TrimGMatrix.times(beamShape);
 
-        if (option.equalsIgnoreCase("beamShape")){
-            double[][] ensembleBeam = new double[1][(int)rightBoundary - (int) leftBoundary];
+        if (option.equalsIgnoreCase("beamShape")) {
 
-            int ensembleIndex = 0;
-            for (int i = (int)leftBoundary; i < (int) rightBoundary; i++) {
-                for (int l = 0; l < beamShape.getColumnDimension(); l++) {
-                    ensembleBeam[0][ensembleIndex] = beamShape.get(i, l);
-                    ensembleIndex++;
-                }
-            }
-            histogram = Histogram.initializeHistogram(ensembleBeam[0], (int)rightBoundary - (int) leftBoundary);
+            histogram = Histogram.initializeHistogram(beamMassInterp.getArray()[0], beamShape.transpose().getArray()[0], beamShape.getRowDimension() * beamShape.getColumnDimension());
 
-        }else if (option.equalsIgnoreCase("gBeam")){
-            double[][] ensembleGBeam = new double[gBeam.getRowDimension()*gBeam.getColumnDimension()][1];
-
-
-            int ensembleIndex = 0;
-            for (int i = 0; i < gBeam.getRowDimension(); i++) {
-                for (int l = 0; l < gBeam.getColumnDimension(); l++) {
-                    ensembleGBeam[ensembleIndex][0] = gBeam.get(i, l);
-                    ensembleIndex++;
-                }
-            }
-
-            double[][] testGBeam = MatLab.transpose(ensembleGBeam);
-            histogram = Histogram.initializeHistogram(testGBeam[0], gBeam.getRowDimension()*gBeam.getColumnDimension() );
+        } else if (option.equalsIgnoreCase("gBeam")) {
+            histogram = Histogram.initializeHistogram(data.getMagnetMasses().transpose().getArray()[0], gBeam.transpose().getArray()[0], gBeam.getRowDimension() * gBeam.getColumnDimension());
         }
 
-
-        //TODO add data to descriptive histogram
-
         return histogram;
+    }
+
+
+    public static double[] getIntensityData() {
+        return intensityData;
+    }
+
+    public static double[] getMassData() {
+        return massData;
+    }
+
+    public static double getLeftBoundary() {
+        return leftBoundary;
+    }
+
+    public static double getRightBoundary() {
+        return rightBoundary;
     }
 }

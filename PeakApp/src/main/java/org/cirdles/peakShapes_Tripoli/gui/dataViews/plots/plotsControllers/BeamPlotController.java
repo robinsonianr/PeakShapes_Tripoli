@@ -14,7 +14,7 @@ import org.cirdles.commons.util.ResourceExtractor;
 import org.cirdles.peakShapes_Tripoli.PeakShapes_Tripoli;
 import org.cirdles.peakShapes_Tripoli.beamShape.BeamDataOutput;
 import org.cirdles.peakShapes_Tripoli.gui.dataViews.plots.AbstractDataView;
-import org.cirdles.peakShapes_Tripoli.gui.dataViews.plots.HistogramPlot;
+import org.cirdles.peakShapes_Tripoli.gui.dataViews.plots.BeamHistogramPlot;
 import org.cirdles.peakShapes_Tripoli.visualizationUtilities.Histogram;
 
 import java.io.IOException;
@@ -35,9 +35,9 @@ public class BeamPlotController {
     private ToolBar toolBar;
 
     @FXML
-    void graphBtn(ActionEvent event) throws IOException{
+    void graphBtn(ActionEvent event) throws IOException {
         loadBeamPlot("beamShape");
-        ((Button)event.getSource()).setDisable(true);
+        ((Button) event.getSource()).setDisable(true);
 
     }
 
@@ -45,11 +45,11 @@ public class BeamPlotController {
     @FXML
     void initialize() {
 
-        vBoxControl.setPrefSize(500.0, 650);
+        vBoxControl.setPrefSize(500.0, 500);
         toolBar.setPrefSize(500, 20.0);
-        scrollPane.setPrefSize(500.0, 650 - toolBar.getHeight());
+        scrollPane.setPrefSize(500.0, 500 - toolBar.getHeight());
         scrollPane.setPrefViewportWidth(485.0);
-        scrollPane.setPrefViewportHeight(465.0);
+        scrollPane.setPrefViewportHeight(485);
 
         vBoxControl.prefWidthProperty().bind(plotAnchorPane.widthProperty());
         vBoxControl.prefHeightProperty().bind(plotAnchorPane.heightProperty());
@@ -63,15 +63,16 @@ public class BeamPlotController {
         org.cirdles.commons.util.ResourceExtractor RESOURCE_EXTRACTOR = new ResourceExtractor(PeakShapes_Tripoli.class);
         Path dataFile = RESOURCE_EXTRACTOR.extractResourceAsFile("/org/cirdles/peakShapes_Tripoli/dataProccessors/DVCC18-9 z9 Pb-570-PKC-205Pb-PM-S2B7C1.TXT").toPath();
         Histogram histogram = BeamDataOutput.modelTest(dataFile, option);
+        int leftBoundary = (int) BeamDataOutput.getLeftBoundary();
+        int rightBoundary = (int) BeamDataOutput.getRightBoundary();
 
-        AbstractDataView histogramPlot = new HistogramPlot(new Rectangle(scrollPane.getWidth(), scrollPane.getHeight()), histogram);
+        AbstractDataView histogramPlot = new BeamHistogramPlot(leftBoundary, rightBoundary, new Rectangle(scrollPane.getWidth(), scrollPane.getHeight()), histogram);
 
         scrollPane.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (newValue.intValue() > 100) {
                     histogramPlot.setMyWidth(newValue.intValue() - 15);
-                    histogramPlot.preparePanel();
                     histogramPlot.repaint();
                 }
             }
@@ -82,7 +83,6 @@ public class BeamPlotController {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (newValue.intValue() > 100) {
                     histogramPlot.setMyHeight(newValue.intValue() - 15);
-                    histogramPlot.preparePanel();
                     histogramPlot.repaint();
                 }
             }
@@ -92,7 +92,6 @@ public class BeamPlotController {
         scrollPane.setContent(histogramPlot);
 
     }
-
 
 
 }

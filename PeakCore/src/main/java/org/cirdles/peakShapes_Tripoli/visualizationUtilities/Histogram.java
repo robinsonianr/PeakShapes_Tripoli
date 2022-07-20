@@ -23,27 +23,29 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
  */
 public class Histogram {
 
-    private double[] data;
+    private double[] xData;
+    private double[] yData;
     private int binCount;
     private double[] binCounts;
     private double binWidth;
     private double[] binCenters;
 
-    private Histogram(double[] data, int binCount) {
-        this.data = data;
+    private Histogram(double[] xData, double[] yData, int binCount) {
+        this.xData = xData;
+        this.yData = yData;
         this.binCount = binCount;
     }
 
-    public static Histogram initializeHistogram(double[] data, int binCount){
-        Histogram histogram = new Histogram(data, binCount);
+    public static Histogram initializeHistogram(double[] xData, double[] yData, int binCount) {
+        Histogram histogram = new Histogram(xData, yData, binCount);
         histogram.generateHistogram();
         return histogram;
     }
 
-    private void generateHistogram(){
+    private void generateHistogram() {
         DescriptiveStatistics descriptiveStatisticsRatios = new DescriptiveStatistics();
-        for (int index = 0; index < data.length; index++) {
-            descriptiveStatisticsRatios.addValue(data[index]);
+        for (int index = 0; index < yData.length; index++) {
+            descriptiveStatisticsRatios.addValue(yData[index]);
         }
         double dataMax = descriptiveStatisticsRatios.getMax();
         double dataMin = descriptiveStatisticsRatios.getMin();
@@ -52,8 +54,8 @@ public class Histogram {
         binWidth = (dataMax - dataMin) / (double) binCount;
 
         int maxBinCount = 0;
-        for (int index = 0; index < data.length; index++) {
-            double datum = data[index];
+        for (int index = 0; index < yData.length; index++) {
+            double datum = yData[index];
             if (datum > 0.0) { //ignore 0s here
                 int binNum = (int) Math.floor(Math.abs((datum - dataMin * 1.000000001) / binWidth));
                 try {
@@ -67,8 +69,8 @@ public class Histogram {
         }
 
         binCenters = new double[binCount];
-        for (int binIndex = 0; binIndex < binCount; binIndex ++){
-            binCenters[binIndex] = dataMin + ( binIndex + 0.5) * binWidth;
+        for (int binIndex = 0; binIndex < binCount; binIndex++) {
+            binCenters[binIndex] = dataMin + (binIndex + 0.5) * binWidth;
         }
     }
 
@@ -84,7 +86,11 @@ public class Histogram {
         return binCenters;
     }
 
-    public double[] getData() {
-        return data;
+    public double[] getyData() {
+        return yData;
+    }
+
+    public double[] getxData() {
+        return xData;
     }
 }

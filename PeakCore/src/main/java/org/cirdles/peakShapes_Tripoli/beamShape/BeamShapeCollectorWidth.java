@@ -7,7 +7,6 @@ import org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.dataModel.Dat
 import org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.massSpec.MassSpecModel;
 import org.cirdles.peakShapes_Tripoli.matlab.MatLab;
 import org.cirdles.peakShapes_Tripoli.splineBasis.SplineBasisModel;
-import org.cirdles.peakShapes_Tripoli.visualizationUtilities.Histogram;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,9 +36,7 @@ public class BeamShapeCollectorWidth {
     }
 
 
-
-
-    public  void calcBeamShapeCollectorWidth() {
+    public void calcBeamShapeCollectorWidth() {
 
         double maxBeam, maxBeamIndex, thesholdIntensity;
         // Spline basis Basis

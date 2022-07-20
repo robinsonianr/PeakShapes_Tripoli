@@ -21,7 +21,7 @@ public class BeamShapePlotWindow {
     public BeamShapePlotWindow(Stage primaryStage) {
         this.primaryStage = primaryStage;
         plottingStage = new Stage();
-        plottingStage.setMinHeight(550);
+        plottingStage.setMinHeight(500);
         plottingStage.setMinWidth(500);
         plottingStage.setTitle("Beam Shape Demo Window");
 
