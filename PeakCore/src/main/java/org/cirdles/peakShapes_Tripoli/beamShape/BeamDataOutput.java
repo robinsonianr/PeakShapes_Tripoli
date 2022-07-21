@@ -6,7 +6,7 @@ import org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.dataModel.Dat
 import org.cirdles.peakShapes_Tripoli.beamShape.peakMeasProperties.massSpec.MassSpecModel;
 import org.cirdles.peakShapes_Tripoli.matlab.MatLab;
 import org.cirdles.peakShapes_Tripoli.splineBasis.SplineBasisModel;
-import org.cirdles.peakShapes_Tripoli.visualizationUtilities.Histogram;
+import org.cirdles.peakShapes_Tripoli.visualizationUtilities.LinePlot;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,7 +18,7 @@ public class BeamDataOutput {
     private static double leftBoundary;
     private static double rightBoundary;
 
-    public static Histogram modelTest(Path dataFile, String option) throws IOException {
+    public static LinePlot modelTest(Path dataFile, String option) throws IOException {
         DataModel data = new DataModel(dataFile);
         MassSpecModel massSpec = MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
         data.calcCollectorWidthAMU(massSpec);
@@ -28,9 +28,9 @@ public class BeamDataOutput {
     }
 
 
-    static Histogram gatherBeamWidth(MassSpecModel massSpec, DataModel data, String option) {
+    static LinePlot gatherBeamWidth(MassSpecModel massSpec, DataModel data, String option) {
         PeakMeas peakMeas = PeakMeas.initializePeakMeas(data, massSpec);
-        Histogram histogram = null;
+        LinePlot linePlot = null;
 
         double maxBeam, maxBeamIndex, thesholdIntensity;
         // Spline basis Basis
@@ -134,10 +134,13 @@ public class BeamDataOutput {
         Matrix gAugmented = MatLab.concatMatrix(GB, lambdaD);
         Matrix measAugmented = MatLab.concatMatrix(data.getMeasPeakIntensity(), new Matrix(MatLab.zeros((int) beamKnots + basisDegree - orderDiff, 1)));
         Matrix wtsAugmented = MatLab.blkDiag(WData, new Matrix(MatLab.eye((int) beamKnots + basisDegree - orderDiff)));
-        Matrix beamPSpline = gAugmented.transpose().times(wtsAugmented.times(gAugmented)).inverse().times(gAugmented.transpose().times(wtsAugmented.times(measAugmented)));
-        Matrix test3 = new Matrix(wtsAugmented.chol().getL().getArray()).times(gAugmented);
-        Matrix test4 = new Matrix(wtsAugmented.chol().getL().getArray()).times(measAugmented);
-        Matrix beamNNPspl = MatLab.solveNNLS(test3, test4);
+
+//        Matrix beamPSpline = gAugmented.transpose().times(wtsAugmented.times(gAugmented)).inverse().times(gAugmented.transpose().times(wtsAugmented.times(measAugmented)));
+//        Matrix test3 = new Matrix(wtsAugmented.chol().getL().getArray()).times(gAugmented);
+//        Matrix test4 = new Matrix(wtsAugmented.chol().getL().getArray()).times(measAugmented);
+
+        // does not compute on Ryan data file
+        //Matrix beamNNPspl = MatLab.solveNNLS(test3, test4);
 
         // Determine peak width
         Matrix beamShape = Basis.times(BeamWNNLS);
@@ -174,13 +177,13 @@ public class BeamDataOutput {
 
         if (option.equalsIgnoreCase("beamShape")) {
 
-            histogram = Histogram.initializeHistogram(beamMassInterp.getArray()[0], beamShape.transpose().getArray()[0], beamShape.getRowDimension() * beamShape.getColumnDimension());
+            linePlot = LinePlot.initializeLinePlot(beamMassInterp.getArray()[0], beamShape.transpose().getArray()[0]);
 
         } else if (option.equalsIgnoreCase("gBeam")) {
-            histogram = Histogram.initializeHistogram(data.getMagnetMasses().transpose().getArray()[0], gBeam.transpose().getArray()[0], gBeam.getRowDimension() * gBeam.getColumnDimension());
+            linePlot = LinePlot.initializeLinePlot(data.getMagnetMasses().transpose().getArray()[0], gBeam.transpose().getArray()[0]);
         }
 
-        return histogram;
+        return linePlot;
     }
 
 

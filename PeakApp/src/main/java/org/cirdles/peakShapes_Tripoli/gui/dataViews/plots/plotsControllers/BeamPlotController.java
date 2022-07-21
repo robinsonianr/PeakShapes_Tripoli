@@ -14,8 +14,8 @@ import org.cirdles.commons.util.ResourceExtractor;
 import org.cirdles.peakShapes_Tripoli.PeakShapes_Tripoli;
 import org.cirdles.peakShapes_Tripoli.beamShape.BeamDataOutput;
 import org.cirdles.peakShapes_Tripoli.gui.dataViews.plots.AbstractDataView;
-import org.cirdles.peakShapes_Tripoli.gui.dataViews.plots.BeamHistogramPlot;
-import org.cirdles.peakShapes_Tripoli.visualizationUtilities.Histogram;
+import org.cirdles.peakShapes_Tripoli.gui.dataViews.plots.BeamLinePlot;
+import org.cirdles.peakShapes_Tripoli.visualizationUtilities.LinePlot;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -61,12 +61,12 @@ public class BeamPlotController {
 
     public void loadBeamPlot(String option) throws IOException {
         org.cirdles.commons.util.ResourceExtractor RESOURCE_EXTRACTOR = new ResourceExtractor(PeakShapes_Tripoli.class);
-        Path dataFile = RESOURCE_EXTRACTOR.extractResourceAsFile("/org/cirdles/peakShapes_Tripoli/dataProccessors/DVCC18-9 z9 Pb-570-PKC-205Pb-PM-S2B7C1.TXT").toPath();
-        Histogram histogram = BeamDataOutput.modelTest(dataFile, option);
+        Path dataFile = RESOURCE_EXTRACTOR.extractResourceAsFile("/org/cirdles/peakShapes_Tripoli/dataProcessors/DVCC18-9 z9 Pb-570-PKC-205Pb-PM-S2B7C1.TXT").toPath();
+        LinePlot linePlot = BeamDataOutput.modelTest(dataFile, option);
         int leftBoundary = (int) BeamDataOutput.getLeftBoundary();
         int rightBoundary = (int) BeamDataOutput.getRightBoundary();
 
-        AbstractDataView histogramPlot = new BeamHistogramPlot(leftBoundary, rightBoundary, new Rectangle(scrollPane.getWidth(), scrollPane.getHeight()), histogram);
+        AbstractDataView histogramPlot = new BeamLinePlot(leftBoundary, rightBoundary, new Rectangle(scrollPane.getWidth(), scrollPane.getHeight()), linePlot);
 
         scrollPane.widthProperty().addListener(new ChangeListener<Number>() {
             @Override

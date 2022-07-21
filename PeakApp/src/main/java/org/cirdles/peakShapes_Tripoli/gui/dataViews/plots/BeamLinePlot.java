@@ -6,21 +6,21 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import org.cirdles.peakShapes_Tripoli.visualizationUtilities.Histogram;
+import org.cirdles.peakShapes_Tripoli.visualizationUtilities.LinePlot;
 
 
-public class BeamHistogramPlot extends AbstractDataView {
+public class BeamLinePlot extends AbstractDataView {
 
-    private Histogram histogram;
+    private LinePlot linePlot;
     int leftBoundary;
     int rightBoundary;
 
     /**
      * @param bounds
      */
-    public BeamHistogramPlot(int leftBoundary, int rightBoundary, Rectangle bounds, Histogram histogram) {
+    public BeamLinePlot(int leftBoundary, int rightBoundary, Rectangle bounds, LinePlot linePlot) {
         super(bounds, 100, 100);
-        this.histogram = histogram;
+        this.linePlot = linePlot;
         this.leftBoundary = leftBoundary;
         this.rightBoundary = rightBoundary;
     }
@@ -28,7 +28,7 @@ public class BeamHistogramPlot extends AbstractDataView {
     @Override
     public void preparePanel() {
 
-        xAxisData = histogram.getxData();
+        xAxisData = linePlot.getxData();
 
 
         minX = xAxisData[0];
@@ -39,7 +39,7 @@ public class BeamHistogramPlot extends AbstractDataView {
         minX -= xMarginStretch;
         maxX += xMarginStretch;
 
-        yAxisData = histogram.getyData();
+        yAxisData = linePlot.getyData();
         minY = Double.MAX_VALUE;
         maxY = -Double.MAX_VALUE;
 
@@ -74,7 +74,7 @@ public class BeamHistogramPlot extends AbstractDataView {
         int textWidth = 0;
 
         g2d.setFill(Paint.valueOf("RED"));
-        g2d.fillText("Line Graph of Beam Shape", 20, 20);
+        g2d.fillText("Line Plot of Beam Shape", 20, 20);
 
         g2d.setLineWidth(2.0);
         // new line graph
