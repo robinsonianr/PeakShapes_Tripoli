@@ -1,5 +1,6 @@
 package org.cirdles.peakShapes_Tripoli.matlab;
 
+import jama.Matrix;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,15 +19,16 @@ class MatLabTest {
 
     @Test
     void find() {
-        MatLab matLab = new MatLab();
-        double[][] A = {{1, 2, 3}, {4, 5, 6}};
-        double[][] B = matLab.ones(2);
+        Matrix A = new Matrix(new double[][]{{1, 2, 3}, {4, 5, 6}});
+        Matrix B = new Matrix(2, 2, 1);
         double[][] anyMat = {{0, 0, 3}, {0, 0, 3}, {0, 0, 3}};
-        double[][] found = matLab.find(A, 4, "last");
-        double[][] any = matLab.any(anyMat, 2);
-        double[][] testKron = matLab.kron(A, B);
+        //double[][] found = MatLab.find(A, 4, "last");
+        Matrix any = MatLab.any(new Matrix(anyMat), 2);
+        Matrix testKron = MatLab.kron(A, B);
+        Boolean isNeg = MatLab.isAllNegative(new Matrix(5, 5, 0));
 
-        System.out.println(Arrays.deepToString(testKron));
+
+        System.out.println(isNeg);
 
     }
 }

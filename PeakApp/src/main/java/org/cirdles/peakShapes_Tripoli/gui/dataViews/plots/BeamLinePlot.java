@@ -11,12 +11,16 @@ import org.cirdles.peakShapes_Tripoli.visualizationUtilities.LinePlot;
 
 public class BeamLinePlot extends AbstractDataView {
 
-    private LinePlot linePlot;
     int leftBoundary;
     int rightBoundary;
+    private LinePlot linePlot;
 
     /**
+     *
+     * @param leftBoundary
+     * @param rightBoundary
      * @param bounds
+     * @param linePlot
      */
     public BeamLinePlot(int leftBoundary, int rightBoundary, Rectangle bounds, LinePlot linePlot) {
         super(bounds, 100, 100);

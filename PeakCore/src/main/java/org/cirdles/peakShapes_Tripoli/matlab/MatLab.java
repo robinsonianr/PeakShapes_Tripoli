@@ -7,12 +7,18 @@ import java.util.List;
 
 public class MatLab {
 
-    // Kronecker product of 2 arrays
-    public static double[][] kron(double[][] A, double[][] B) {
-        int rowA = A.length;
-        int colA = A[0].length;
-        int rowB = B.length;
-        int colB = B[0].length;
+    /**
+     * The Kronecker product
+     *
+     * @param A Matrix
+     * @param B Matrix
+     * @return the Kronecker product of matrices A and B
+     */
+    public static Matrix kron(Matrix A, Matrix B) {
+        int rowA = A.getRowDimension();
+        int colA = A.getColumnDimension();
+        int rowB = B.getRowDimension();
+        int colB = B.getColumnDimension();
 
         double[][] newKron = new double[rowA * rowB][colA * colB];
         if (rowB == 1) {
@@ -25,14 +31,14 @@ public class MatLab {
                     for (int k = 0; k < colA; k++) {
 
                         for (int h = 0; h < colB; h++) {
-                            newKron[kronRow - 1][kronCol] = A[i][k] * B[j][h];
+                            newKron[kronRow - 1][kronCol] = A.get(i, k) * B.get(j, h);
                             kronCol++;
                         }
                     }
                 }
             }
 
-            return newKron;
+            return new Matrix(newKron);
 
         } else {
             int kronRow = 0;
@@ -42,55 +48,24 @@ public class MatLab {
                     int kronCol = 0;
                     for (int k = 0; k < colA; k++) {
                         for (int h = 0; h < colB; h++) {
-                            newKron[kronRow - 1][kronCol] = A[i][k] * B[j][h];
+                            newKron[kronRow - 1][kronCol] = A.get(i, k) * B.get(j, h);
                             kronCol++;
                         }
                     }
                 }
             }
-            return newKron;
+            return new Matrix(newKron);
         }
 
     }
 
-    // matlab ones creates matrix of all ones of desired rows and columns
-    public static double[][] ones(int rows, int cols) {
-        double[][] newOne = new double[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                newOne[i][j] = 1;
-            }
-        }
-
-        return newOne;
-    }
-
-    public static double[][] ones(int dim) {
-        double[][] newOne = new double[dim][dim];
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                newOne[i][j] = 1;
-            }
-        }
-
-        return newOne;
-    }
-
-    // matlab set matrix to degree
-    public static double[][] expMatrix(double[][] matrix, int deg) {
-        int row = matrix.length;
-        int col = matrix[0].length;
-        double[][] mat = new double[row][col];
-
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                mat[i][j] = Math.pow(matrix[i][j], deg);
-            }
-        }
-
-        return mat;
-    }
-
+    /**
+     * Sets each element in matrix to the power deg
+     *
+     * @param A Matrix
+     * @param deg Degree exponent
+     * @return A^deg
+     */
     public static Matrix expMatrix(Matrix A, int deg) {
         double[][] matrix = A.getArray();
         int row = matrix.length;
@@ -106,118 +81,62 @@ public class MatLab {
         return new Matrix(mat);
     }
 
-    // matlab multiply matrix by matrix
-    public static double[][] multMatrix(double[][] A, double[][] B) {
-        int rowA = A.length;
-        int colA = A[0].length;
-        int rowB = B.length;
-        int colB = B[0].length;
-        if (colA == colB && rowA == rowB && rowB == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    C[i][j] = A[i][j] * B[i][j];
-                }
-            }
-            return C;
-        } else if (rowA == 1 && rowA == colB) {
-            double[][] C = new double[rowB][colA];
-            for (int i = 0; i < rowB; i++) {
-                for (int j = 0; j < colA; j++) {
-                    C[i][j] = A[0][j] * B[i][0];
-                }
-            }
-            return C;
-        } else if (colA == 1 && colA == rowB) {
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    C[i][j] = A[i][0] * B[0][j];
-                }
-            }
-            return C;
-        } else {
-            double sum;
-            double[][] C = new double[rowA][colB];
-            for (int i = 0; i < rowA; i++) {
-                for (int j = 0; j < colB; j++) {
-                    sum = 0;
-                    for (int l = 0; l < rowB; l++) {
-                        sum += A[i][l] * B[l][j];
-                    }
-                    C[i][j] = sum;
-                }
-            }
-            return C;
-        }
-    }
-
-    // matlab multiply matrix by int
-    public static double[][] multMatrix(double[][] A, double multiply) {
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[0].length; j++) {
-                A[i][j] *= multiply;
+    /**
+     * Returns matrix of each element of matrix A by param divide
+     *
+     * @param A Matrix
+     * @param divide dividend
+     * @return A/div
+     */
+    public static Matrix divMatrix(Matrix A, double divide) {
+        for (int i = 0; i < A.getRowDimension(); i++) {
+            for (int j = 0; j < A.getColumnDimension(); j++) {
+                A.set(i, j, A.get(i, j) / divide);
             }
         }
 
         return A;
     }
 
-    // Divides matrix by double
-    public static double[][] divMatrix(double[][] A, double divide) {
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[0].length; j++) {
-                A[i][j] /= divide;
-            }
-        }
-
-        return A;
-    }
-
-    // matlab eye
-    public static double[][] eye(int size) {
-        double[][] newEye = new double[size][size];
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (i == j) {
-                    newEye[i][j] = 1;
-                } else {
-                    newEye[i][j] = 0;
-                }
-            }
-        }
-
-        return newEye;
-    }
-
-    // matlab diff
-    public static double[][] diff(double[][] mat) {
-        int row = mat.length;
-        int col = mat[0].length - 1;
+    /**
+     * calculates differences between adjacent elements of X along the first array dimension whose size does not equal 1
+     *
+     * @param mat Matrix
+     * @return Vector matrix of differences between elements
+     */
+    public static Matrix diff(Matrix mat) {
+        int row = mat.getRowDimension();
+        int col = mat.getColumnDimension() - 1;
         double[][] newDiff;
 
         if (row == 1) {
             newDiff = new double[row][col];
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
-                    newDiff[i][j] = (mat[i][j] - mat[i][j + 1]);
+                    newDiff[i][j] = (mat.get(i, j) - mat.get(i, j + 1));
                 }
             }
-            return newDiff;
+            return new Matrix(newDiff);
         } else {
             newDiff = new double[row - 1][col + 1];
             for (int i = 0; i < row - 1; i++) {
                 for (int j = 0; j < col + 1; j++) {
-                    newDiff[i][j] = mat[i][j] - mat[i + 1][j];
+                    newDiff[i][j] = mat.get(i, j) - mat.get(i + 1, j);
                 }
             }
-            return newDiff;
+            return new Matrix(newDiff);
         }
     }
 
-    public static double[][] diff(double[][] mat, int num) {
-        double[][] refDiff;
+    /**
+     * calculates the nth difference by applying the diff(mat) operator recursively num times.
+     *
+     * @param mat Matrix
+     * @param num Number of iterations
+     * @return Vector matrix of differences between elements recursively num times
+     */
+    public static Matrix diff(Matrix mat, int num) {
+        Matrix refDiff;
         refDiff = mat;
         for (int i = 0; i < num; i++) {
             refDiff = diff(refDiff);
@@ -226,43 +145,46 @@ public class MatLab {
         return refDiff;
     }
 
-    // Transposes matrix
-    public static double[][] transpose(double[][] mat) {
-        int row = mat[0].length;
-        int col = mat.length;
-        double[][] transP = new double[row][col];
-
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                transP[i][j] = mat[j][i];
-            }
-        }
-        return transP;
-    }
-
-    public static double[][] greatEqual(double[][] mat1, double[][] mat2) {
-        int maxRow = Math.min(mat1.length, mat2.length);
-        int maxCol = Math.min(mat1[0].length, mat2[0].length);
+    /**
+     * Compares param mat1 and mat2 and sets elements of new matrix to 1 or 0 based on if element
+     * in mat1 is greater than element in mat2
+     *
+     * @param mat1 Matrix
+     * @param mat2 Matrix
+     * @return A matrix of 1's and 0's based on if element in mat1 is greater than element in mat2
+     */
+    public static Matrix greatEqual(Matrix mat1, Matrix mat2) {
+        int maxRow = Math.min(mat1.getRowDimension(), mat2.getRowDimension());
+        int maxCol = Math.min(mat1.getColumnDimension(), mat2.getColumnDimension());
         int i, j = 0;
         double[][] ge = new double[maxRow][maxCol];
         for (int k = 0; k < maxRow; k++) {
             for (int h = 0; h < maxCol; h++) {
-                if (mat1[k][h] >= mat2[k][h]) {
+                if (mat1.get(k, h) >= mat2.get(k, h)) {
                     ge[k][h] = 1;
                 } else {
                     ge[k][h] = 0;
                 }
             }
         }
-        return ge;
+        return new Matrix(ge);
     }
 
-
-    public static double[][] greatEqual(double[][] mat, double num) {
-        double[][] ge = new double[mat.length][mat[0].length];
-        for (int i = 0; i < mat.length; i++) {
-            for (int j = 0; j < mat[0].length; j++) {
-                if (mat[i][j] >= num) {
+    /**
+     * Compares elements of matrix to number and determines if element is greater or equal to num
+     *
+     *
+     * @param mat Matrix
+     * @param num number to be compared
+     * @return A copy of param mat with elements either 1 or 0 based on if the element is greater than or equal to param
+     */
+    public static Matrix greaterOrEqual(Matrix mat, double num) {
+        int row = mat.getRowDimension();
+        int col = mat.getColumnDimension();
+        double[][] ge = new double[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (mat.get(i, j) >= num) {
                     ge[i][j] = 1;
                 } else {
                     ge[i][j] = 0;
@@ -270,14 +192,23 @@ public class MatLab {
             }
         }
 
-        return ge;
+        return new Matrix(ge);
     }
 
-    public static double[][] greaterThan(double[][] mat, double num) {
-        double[][] ge = new double[mat.length][mat[0].length];
-        for (int i = 0; i < mat.length; i++) {
-            for (int j = 0; j < mat[0].length; j++) {
-                if (mat[i][j] > num) {
+    /**
+     * Returns a copy of param mat with elements either 1 or 0 based on if the element is greater than param
+     * num
+     *
+     * @param mat Matrix
+     * @param num Number compared
+     */
+    public static Matrix greaterThan(Matrix mat, double num) {
+        int row = mat.getRowDimension();
+        int col = mat.getColumnDimension();
+        double[][] ge = new double[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (mat.get(i, j) > num) {
                     ge[i][j] = 1;
                 } else {
                     ge[i][j] = 0;
@@ -285,14 +216,24 @@ public class MatLab {
             }
         }
 
-        return ge;
+        return new Matrix(ge);
     }
 
-    public static double[][] lessEqual(double[][] mat, double num) {
-        double[][] le = new double[mat.length][mat[0].length];
-        for (int i = 0; i < mat.length; i++) {
-            for (int j = 0; j < mat[0].length; j++) {
-                if (mat[i][j] <= num) {
+    /**
+     * Returns a copy of param mat with elements either 1 or 0 based on if the element is less than or equal to param
+     * num
+     *
+     * @param mat Matrix
+     * @param num Number compared
+     */
+    public static Matrix lessOrEqual(Matrix mat, double num) {
+        int row = mat.getRowDimension();
+        int col = mat.getColumnDimension();
+
+        double[][] le = new double[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (mat.get(i, j) <= num) {
                     le[i][j] = 1;
                 } else {
                     le[i][j] = 0;
@@ -300,62 +241,41 @@ public class MatLab {
             }
         }
 
-        return le;
+        return new Matrix(le);
     }
 
-    public static double[][] lessThan(double[][] mat1, double[][] mat2) {
-        int maxRow = Math.min(mat1.length, mat2.length);
-        int maxCol = Math.min(mat1[0].length, mat2[0].length);
+    /**
+     * Returns a matrix comparing param mat1 and mat2 and sets elements of new matrix to 1 or 0 based on if element
+     * in mat1 is less than element in mat2
+     *
+     * @param mat1 Matrix
+     * @param mat2 Matrix
+     */
+    public static Matrix lessThan(Matrix mat1, Matrix mat2) {
+        int maxRow = Math.min(mat1.getRowDimension(), mat2.getRowDimension());
+        int maxCol = Math.min(mat1.getColumnDimension(), mat2.getColumnDimension());
         int i, j = 0;
         double[][] lt = new double[maxRow][maxCol];
         for (int k = 0; k < maxRow; k++) {
             for (int h = 0; h < maxCol; h++) {
-                if (mat1[k][h] < mat2[k][h]) {
+                if (mat1.get(k, h) < mat2.get(k, h)) {
                     lt[k][h] = 1;
                 } else {
                     lt[k][h] = 0;
                 }
             }
         }
-//        for (i = 0; i < maxRow; i++){
-//            while (i < (Math.min(mat1.length, mat2.length)) && j < (Math.min(mat1[0].length, mat2[0].length))) {
-//                if (mat1[i][j] >= mat2[i][j]){
-//                    lt[i][j] = 1;
-//                }else {
-//                    lt[i][j] = 0;
-//                }
-//                j++;
-//            }
-//
-//            for (j = (Math.min(mat1[0].length, mat2[0].length)); j < maxCol; j++ ){
-//                lt[i][j] = 0;
-//            }
-//        }
 
-        return lt;
+        return new Matrix(lt);
     }
 
-    // matlab size only works on 2d arrays
-    public static int[] size(double[][] mat) {
-        int[] matDim;
-        matDim = new int[]{mat.length, mat[0].length};
-
-        return matDim;
-    }
-
-    // matlab size with index
-    public static int size(double[][] mat, int num) {
-        if (num > 2) {
-            return -1;
-        } else {
-            int[] choice = new int[]{mat.length, mat[0].length};
-            int matDim;
-            matDim = choice[num - 1];
-            return matDim;
-
-        }
-    }
-
+    /**
+     * Calculates the size of both the row or column size
+     *
+     * @param A Matrix
+     * @param num number compared
+     * @return The size of the dimension in matrix A chosen by param num
+     */
     public static int size(Matrix A, int num) {
         double[][] mat = A.getArray();
         if (num > 2) {
@@ -369,38 +289,45 @@ public class MatLab {
         }
     }
 
-    // matlab linspace
-    public static double[][] linspace(double min, double max, double points) {
+    /**
+     * Generates a linearly spaced vector of n points of (max - min)/(points - 1)
+     *
+     * @param min min value
+     * @param max max value
+     * @param points number of points spaced between
+     * @return A vector matrix of linearly spaced vector
+     */
+    public static Matrix linspace(double min, double max, double points) {
         double[][] d = new double[1][(int) points];
         for (int i = 0; i < points; i++) {
             d[0][i] = min + i * (max - min) / (points - 1);
         }
-        return d;
+        return new Matrix(d);
     }
 
-    public static double[][] zeros(int rows, int cols) {
-        double[][] zeroMat = new double[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                zeroMat[i][j] = 0;
-            }
-        }
-
-        return zeroMat;
-    }
-
-    public static double[][] find(double[][] mat, int num, String dir) {
+    /**
+     * Finds indices and values of nonzero elements and returns a vector of them
+     * depending on param dir is 'last' finds the last n indices corresponding to nonzero elements in mat. And if param
+     * dir is 'first' finds the first n indices corresponding to nonzero elements.
+     *
+     * @param mat Matrix
+     * @param num Number of indices to find
+     * @param dir Direction
+     */
+    public static Matrix find(Matrix mat, int num, String dir) {
         double[][] found = new double[num][1];
+        int row = mat.getRowDimension();
+        int col = mat.getColumnDimension();
         int numCheck = 0;
         int i = 0;
         int index;
         if (dir.equalsIgnoreCase("first")) {
             index = 0;
-            for (int startCol = 0; startCol < mat[0].length; startCol++) {
-                for (int startRow = 0; startRow < mat.length; startRow++) {
+            for (int startCol = 0; startCol < col; startCol++) {
+                for (int startRow = 0; startRow < row; startRow++) {
                     index++;
                     if (numCheck != num) {
-                        if (mat[startRow][startCol] > 0) {
+                        if (mat.get(startRow, startCol) > 0) {
                             found[i][0] = index - 1;
                             numCheck++;
                             i++;
@@ -414,12 +341,12 @@ public class MatLab {
             }
 
         } else if (dir.equalsIgnoreCase("last")) {
-            index = (mat.length * mat[0].length) - 1;
-            for (int startCol = mat[0].length - 1; startCol >= 0; startCol--) {
-                for (int startRow = mat.length - 1; startRow >= 0; startRow--) {
+            index = (row * col) - 1;
+            for (int startCol = col - 1; startCol >= 0; startCol--) {
+                for (int startRow = row - 1; startRow >= 0; startRow--) {
                     index--;
                     if (numCheck != num) {
-                        if (mat[startRow][startCol] > 0) {
+                        if (mat.get(startRow, startCol) > 0) {
                             found[i][0] = index + 1;
                             numCheck++;
                             i++;
@@ -431,18 +358,26 @@ public class MatLab {
 
             }
         }
-        return found;
+        return new Matrix(found);
     }
 
-    public static double[][] any(double[][] matrix, int dim) {
+    /**
+     * Determine if any array elements are nonzero. Returns elements along dimension dim. The dim input is a positive integer scalar.
+     *
+     * @param matrix Matrix
+     * @param dim Dimension
+     */
+    public static Matrix any(Matrix matrix, int dim) {
+        int row = matrix.getRowDimension();
+        int col = matrix.getColumnDimension();
         double[][] anyMat = null;
         double sum = 0;
         if (dim == 1) {
-            anyMat = new double[1][matrix[0].length];
+            anyMat = new double[1][col];
 
-            for (int i = 0; i < matrix[0].length; i++) {
-                for (int j = 0; j < matrix.length; j++) {
-                    sum += matrix[j][i];
+            for (int i = 0; i < col; i++) {
+                for (int j = 0; j < row; j++) {
+                    sum += matrix.get(j, i);
 
                 }
                 if (sum > 0) {
@@ -456,11 +391,11 @@ public class MatLab {
 
 
         } else if (dim == 2) {
-            anyMat = new double[matrix.length][1];
+            anyMat = new double[row][1];
 
-            for (int i = 0; i < matrix.length; i++) {
-                for (int j = 0; j < matrix[0].length; j++) {
-                    sum += matrix[i][j];
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < col; j++) {
+                    sum += matrix.get(i, j);
 
                 }
                 if (sum > 0) {
@@ -474,40 +409,62 @@ public class MatLab {
         }
 
 
-        return anyMat;
+        assert anyMat != null;
+        return new Matrix(anyMat);
     }
 
-    public static double[][] rDivide(double[][] A, double div) {
-        double[][] divMat = new double[A.length][A[0].length];
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[0].length; j++) {
-                divMat[i][j] = div / A[i][j];
+    /**
+     * Divides param div by the elements in param A
+     *
+     * @param A Matrix
+     * @param div divdend
+     */
+    public static Matrix rDivide(Matrix A, double div) {
+        int row = A.getRowDimension();
+        int col = A.getColumnDimension();
+        double[][] divMat = new double[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                divMat[i][j] = div / A.get(i, j);
             }
         }
 
-        return divMat;
+        return new Matrix(divMat);
     }
 
-
-    public static double[][] max(double[][] matrix, int dim) {
-        double[][] maxMat = new double[matrix.length][matrix[0].length];
+    /**
+     * returns the maximum element along dimension dim.
+     *
+     * @param matrix Matrix
+     * @param dim Dimension
+     */
+    public static Matrix max(Matrix matrix, int dim) {
+        int row = matrix.getRowDimension();
+        int col = matrix.getColumnDimension();
+        double[][] maxMat = new double[row][col];
         double max = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                maxMat[i][j] = (dim > matrix[i][j]) ? dim : matrix[i][j];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                maxMat[i][j] = (dim > matrix.get(i, j)) ? dim : matrix.get(i, j);
             }
         }
-        return maxMat;
+        return new Matrix(maxMat);
     }
 
-    public static double[][] diag(double[][] mat) {
-        double[][] diagMat = new double[mat.length][mat.length];
+    /**
+     * returns a square diagonal matrix with the elements of param mat on the main diagonal.
+     *
+     * @param mat Matrix
+     */
+    public static Matrix diag(Matrix mat) {
+        int row = mat.getRowDimension();
+        double[][] diagMat = new double[row][row];
         int dag = 0;
 
         for (int i = 0; i < diagMat.length; i++) {
             for (int j = 0; j < diagMat[0].length; j++) {
                 if (i == j) {
-                    diagMat[i][j] = mat[dag][0];
+                    diagMat[i][j] = mat.get(dag, 0);
                     dag++;
                 } else {
                     diagMat[i][j] = 0;
@@ -515,10 +472,16 @@ public class MatLab {
             }
         }
 
-        return diagMat;
+        return new Matrix(diagMat);
     }
 
-
+    /**
+     * Concatenates 2 matrices together creating an even larger matrix of the dimension size of each matrix row size
+     * and column size added together.
+     *
+     * @param A Matrix
+     * @param B Matrix
+     */
     public static Matrix concatMatrix(Matrix A, Matrix B) {
         Matrix concated = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getColumnDimension());
         int indexBRow = 0;
@@ -543,8 +506,13 @@ public class MatLab {
         return concated;
     }
 
-
-    public static Matrix blkDiag(Matrix A, Matrix B) {
+    /**
+     * returns the block diagonal matrix created by aligning the input matrices A, B along the diagonal of new matrix.
+     *
+     * @param A Matrix
+     * @param B Matrix
+     */
+    public static Matrix blockDiag(Matrix A, Matrix B) {
         Matrix diag = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getRowDimension() + B.getRowDimension());
         int indexBRow = 0;
         int indexBCol = 0;
@@ -657,7 +625,7 @@ public class MatLab {
         return x;
     }
 
-    private static boolean isAllNegative(Matrix w) {
+    public static boolean isAllNegative(Matrix w) {
         boolean result = true;
         int m = w.getRowDimension();
         for (int i = 0; i < m; i++)

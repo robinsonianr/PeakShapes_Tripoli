@@ -14,9 +14,8 @@ import java.io.IOException;
 
 public class PeakShapesGUI extends Application {
 
-    protected static Stage primaryStage;
     public static Window primaryStageWindow;
-
+    protected static Stage primaryStage;
 
     public static void main(String[] args) {
 
@@ -53,9 +52,11 @@ public class PeakShapesGUI extends Application {
         FXMLLoader loader = new FXMLLoader(PeakShapesGUI.class.getResource("PeakShapeGUI.fxml"));
         scene.setRoot(loader.load());
         scene.setUserData(loader.getController());
-        primaryStage.show();
         primaryStage.setMinHeight(scene.getHeight() + 15);
         primaryStage.setMinWidth(scene.getWidth());
+
+        primaryStage.show();
+
 
     }
 }

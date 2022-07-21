@@ -10,12 +10,16 @@ import org.cirdles.peakShapes_Tripoli.visualizationUtilities.LinePlot;
 
 
 public class GBeamLinePlot extends AbstractDataView {
+    double[] yIntensity;
     private LinePlot linePlot;
     private double[] xMass;
-    double[] yIntensity;
 
     /**
+     *
+     * @param massData
+     * @param intensityData
      * @param bounds
+     * @param linePlot
      */
     public GBeamLinePlot(double[] massData, double[] intensityData, Rectangle bounds, LinePlot linePlot) {
         super(bounds, 100, 100);

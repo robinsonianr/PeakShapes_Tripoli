@@ -25,7 +25,6 @@ public class LinePlot {
     private LinePlot(double[] xData, double[] yData) {
         this.xData = xData;
         this.yData = yData;
-
     }
 
     public static LinePlot initializeLinePlot(double[] xData, double[] yData) {
