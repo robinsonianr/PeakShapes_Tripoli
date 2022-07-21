@@ -12,7 +12,7 @@
          <children>
             <ToolBar fx:id="toolBar" prefHeight="40.0" prefWidth="200.0">
               <items>
-                <Button mnemonicParsing="false" onAction="#graphBtn" text="Test Graph" />
+                <Button mnemonicParsing="false" onAction="#graphBtn" text="Test Plot" />
               </items>
             </ToolBar>
             <ScrollPane fx:id="scrollPane" prefHeight="358.0" prefWidth="500.0" />
