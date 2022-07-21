@@ -6,27 +6,27 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import org.cirdles.peakShapes_Tripoli.visualizationUtilities.Histogram;
+import org.cirdles.peakShapes_Tripoli.visualizationUtilities.LinePlot;
 
 
-public class GBeamHistogramPlot extends AbstractDataView {
-    private Histogram histogram;
+public class GBeamLinePlot extends AbstractDataView {
+    private LinePlot linePlot;
     private double[] xMass;
     double[] yIntensity;
 
     /**
      * @param bounds
      */
-    public GBeamHistogramPlot(double[] massData, double[] intensityData, Rectangle bounds, Histogram histogram) {
+    public GBeamLinePlot(double[] massData, double[] intensityData, Rectangle bounds, LinePlot linePlot) {
         super(bounds, 100, 100);
-        this.histogram = histogram;
+        this.linePlot = linePlot;
         this.xMass = massData;
         this.yIntensity = intensityData;
     }
 
     @Override
     public void preparePanel() {
-        xAxisData = histogram.getxData();
+        xAxisData = linePlot.getxData();
 
         minX = xAxisData[0];
         maxX = xAxisData[xAxisData.length - 1];
@@ -36,7 +36,7 @@ public class GBeamHistogramPlot extends AbstractDataView {
         minX -= xMarginStretch;
         maxX += xMarginStretch;
 
-        yAxisData = histogram.getyData();
+        yAxisData = linePlot.getyData();
         minY = Double.MAX_VALUE;
         maxY = -Double.MAX_VALUE;
 
@@ -71,7 +71,7 @@ public class GBeamHistogramPlot extends AbstractDataView {
         int textWidth = 0;
 
         g2d.setFill(Paint.valueOf("RED"));
-        g2d.fillText("Line Graph of G-Beam", 20, 20);
+        g2d.fillText("Line Plot of G-Beam", 20, 20);
 
         // plot bins
 
@@ -82,7 +82,7 @@ public class GBeamHistogramPlot extends AbstractDataView {
         g2d.setStroke(Paint.valueOf("Blue"));
         g2d.setLineDashes(0);
         // x = magnetMass y = intensity
-        g2d.moveTo(mapX(xMass[0]), mapY(yIntensity[0]));
+
         for (int i = 0; i < xMass.length; i++) {
             g2d.lineTo(mapX(xMass[i]), mapY(yIntensity[i]));
         }
@@ -92,7 +92,9 @@ public class GBeamHistogramPlot extends AbstractDataView {
         g2d.setLineWidth(2.5);
         g2d.setLineDashes(4);
         g2d.setStroke(Paint.valueOf("Red"));
+
         // x = magnetMass y = G-Beam
+        g2d.moveTo(mapX(xAxisData[0]), mapY(yAxisData[0]));
         for (int i = 0; i < xAxisData.length; i++) {
             // line tracing through points
             g2d.lineTo(mapX(xAxisData[i]), mapY(yAxisData[i]));

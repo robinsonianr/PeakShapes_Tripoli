@@ -23,7 +23,7 @@ public class GBeamPlotWindow {
         plottingStage = new Stage();
         plottingStage.setMinHeight(550);
         plottingStage.setMinWidth(600);
-        plottingStage.setTitle("G-Beam Demo Window");
+        plottingStage.setTitle("G-Beam Window");
 
         plottingStage.setOnCloseRequest((WindowEvent e) -> {
             plottingStage.hide();

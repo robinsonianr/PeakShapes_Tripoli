@@ -23,7 +23,7 @@ public class BeamShapePlotWindow {
         plottingStage = new Stage();
         plottingStage.setMinHeight(550);
         plottingStage.setMinWidth(600);
-        plottingStage.setTitle("Beam Shape Demo Window");
+        plottingStage.setTitle("Beam Shape Window");
 
         plottingStage.setOnCloseRequest((WindowEvent e) -> {
             plottingStage.hide();
