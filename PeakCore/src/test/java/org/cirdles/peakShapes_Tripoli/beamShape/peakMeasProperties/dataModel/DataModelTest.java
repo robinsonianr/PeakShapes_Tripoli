@@ -26,7 +26,7 @@ class DataModelTest {
     @Test
     void dataModel() throws IOException {
         System.err.println("Testing Example Data DV");
-        Path dataFile = RESOURCE_EXTRACTOR.extractResourceAsFile("/org/cirdles/peakShapes_Tripoli/dataProccessors/DVCC18-9 z9 Pb-570-PKC-205Pb-PM-S2B7C1.TXT").toPath();
+        Path dataFile = RESOURCE_EXTRACTOR.extractResourceAsFile("/org/cirdles/peakShapes_Tripoli/dataProcessors/DVCC18-9 z9 Pb-570-PKC-205Pb-PM-S2B7C1.TXT").toPath();
         MassSpecModel massSpec = MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
 
         DataModel data = new DataModel(dataFile);
