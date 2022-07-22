@@ -28,7 +28,7 @@ class BeamShapeCollectorWidthTest {
     void getBeamShape() throws IOException {
         Matrix beam;
         System.err.println("Testing Example Data DV");
-        Path dataFile = RESOURCE_EXTRACTOR.extractResourceAsFile("/org/cirdles/peakShapes_Tripoli/dataProccessors/HY30ZK z10 Pb-1004-PKC-205Pb-PM-S2B7C1.TXT").toPath();
+        Path dataFile = RESOURCE_EXTRACTOR.extractResourceAsFile("/org/cirdles/peakShapes_Tripoli/dataProcessors/HY30ZK z10 Pb-1004-PKC-205Pb-PM-S2B7C1.TXT").toPath();
         MassSpecModel massSpec = MassSpecModel.initializeMassSpec("PhoenixKansas_1e12");
         BeamShapeCollectorWidth beamShape = new BeamShapeCollectorWidth(dataFile, massSpec);
         beamShape.calcBeamShapeCollectorWidth();

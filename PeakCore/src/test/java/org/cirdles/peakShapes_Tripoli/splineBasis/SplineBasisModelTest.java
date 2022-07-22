@@ -20,7 +20,7 @@ class SplineBasisModelTest {
 
     @Test
     void bBase() {
-        Matrix splineTest = new Matrix(MatLab.linspace(204.8507, 205.1165, 1000));
+        Matrix splineTest = MatLab.linspace(204.8507, 205.1165, 1000);
         SplineBasisModel base = SplineBasisModel.initializeSpline(splineTest, 22, 3);
 
 
