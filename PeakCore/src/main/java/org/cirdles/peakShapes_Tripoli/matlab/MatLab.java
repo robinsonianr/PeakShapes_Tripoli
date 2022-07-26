@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatLab {
-
     /**
      * The Kronecker product
      *
@@ -310,7 +309,7 @@ public class MatLab {
      * depending on param dir is 'last' finds the last n indices corresponding to nonzero elements in mat. And if param
      * dir is 'first' finds the first n indices corresponding to nonzero elements.
      *
-     * @param mat Matrix
+     * @param mat Matrix mat
      * @param num Number of indices to find
      * @param dir Direction
      */
@@ -362,10 +361,10 @@ public class MatLab {
     }
 
     /**
-     * Determine if any array elements are nonzero. Returns elements along dimension dim. The dim input is a positive integer scalar.
+     * Determines if any array elements are nonzero. Returns elements along dimension dim. The dim input is a positive integer scalar.
      *
-     * @param matrix Matrix
-     * @param dim Dimension
+     * @param matrix Matrix matrix
+     * @param dim Dimension dim
      */
     public static Matrix any(Matrix matrix, int dim) {
         int row = matrix.getRowDimension();
@@ -416,8 +415,9 @@ public class MatLab {
     /**
      * Divides param div by the elements in param A
      *
-     * @param A Matrix
-     * @param div divdend
+     * @param A Matrix A
+     * @param div dividend div
+     * @return div/A
      */
     public static Matrix rDivide(Matrix A, double div) {
         int row = A.getRowDimension();
@@ -435,17 +435,17 @@ public class MatLab {
     /**
      * returns the maximum element along dimension dim.
      *
-     * @param matrix Matrix
-     * @param dim Dimension
+     * @param matrix Matrix matrix
+     * @param max comparable max
+     * @return max > matrix
      */
-    public static Matrix max(Matrix matrix, int dim) {
+    public static Matrix max(Matrix matrix, int max) {
         int row = matrix.getRowDimension();
         int col = matrix.getColumnDimension();
         double[][] maxMat = new double[row][col];
-        double max = 0;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                maxMat[i][j] = (dim > matrix.get(i, j)) ? dim : matrix.get(i, j);
+                maxMat[i][j] = (max > matrix.get(i, j)) ? max : matrix.get(i, j);
             }
         }
         return new Matrix(maxMat);
@@ -454,7 +454,7 @@ public class MatLab {
     /**
      * returns a square diagonal matrix with the elements of param mat on the main diagonal.
      *
-     * @param mat Matrix
+     * @param mat Matrix mat
      */
     public static Matrix diag(Matrix mat) {
         int row = mat.getRowDimension();
@@ -475,75 +475,75 @@ public class MatLab {
         return new Matrix(diagMat);
     }
 
-    /**
-     * Concatenates 2 matrices together creating an even larger matrix of the dimension size of each matrix row size
-     * and column size added together.
-     *
-     * @param A Matrix
-     * @param B Matrix
-     */
-    public static Matrix concatMatrix(Matrix A, Matrix B) {
-        Matrix concated = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getColumnDimension());
-        int indexBRow = 0;
-
-
-        for (int i = 0; i < concated.getRowDimension() - B.getRowDimension(); i++) {
-            for (int j = 0; j < concated.getColumnDimension(); j++) {
-                concated.set(i, j, A.get(i, j));
-            }
-        }
-
-        for (int i = A.getRowDimension(); i < concated.getRowDimension(); i++) {
-            indexBRow++;
-            int indexBCol = 0;
-            for (int j = 0; j < concated.getColumnDimension(); j++) {
-                concated.set(i, j, B.get(indexBRow - 1, indexBCol));
-                indexBCol++;
-            }
-
-        }
-
-        return concated;
-    }
-
-    /**
-     * returns the block diagonal matrix created by aligning the input matrices A, B along the diagonal of new matrix.
-     *
-     * @param A Matrix
-     * @param B Matrix
-     */
-    public static Matrix blockDiag(Matrix A, Matrix B) {
-        Matrix diag = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getRowDimension() + B.getRowDimension());
-        int indexBRow = 0;
-        int indexBCol = 0;
-
-        for (int i = 0; i < diag.getRowDimension() - B.getRowDimension(); i++) {
-            for (int j = 0; j < diag.getColumnDimension() - B.getColumnDimension(); j++) {
-                if (i == j) {
-                    diag.set(i, j, A.get(i, j));
-                } else {
-                    diag.set(i, j, 0);
-                }
-
-            }
-        }
-
-        for (int i = A.getRowDimension(); i < diag.getRowDimension(); i++) {
-
-
-            for (int j = A.getColumnDimension(); j < diag.getColumnDimension(); j++) {
-                if (i == j) {
-                    diag.set(i, j, B.get(indexBRow, indexBCol));
-                    indexBCol++;
-                    indexBRow++;
-                }
-
-
-            }
-
-        }
-        return diag;
-    }
+//    /**
+//     * Concatenates 2 matrices together creating an even larger matrix of the dimension size of each matrix row size
+//     * and column size added together.
+//     *
+//     * @param A Matrix A
+//     * @param B Matrix B
+//     */
+//    public static Matrix concatMatrix(Matrix A, Matrix B) {
+//        Matrix concated = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getColumnDimension());
+//        int indexBRow = 0;
+//
+//
+//        for (int i = 0; i < A.getRowDimension(); i++) {
+//            for (int j = 0; j < concated.getColumnDimension(); j++) {
+//                concated.set(i, j, A.get(i, j));
+//            }
+//        }
+//
+//        for (int i = A.getRowDimension(); i < concated.getRowDimension(); i++) {
+//            indexBRow++;
+//            int indexBCol = 0;
+//            for (int j = 0; j < concated.getColumnDimension(); j++) {
+//                concated.set(i, j, B.get(indexBRow - 1, indexBCol));
+//                indexBCol++;
+//            }
+//
+//        }
+//
+//        return concated;
+//    }
+//
+//    /**
+//     * returns the block diagonal matrix created by aligning the input matrices A, B along the diagonal of new matrix.
+//     *
+//     * @param A Matrix A
+//     * @param B Matrix B
+//     */
+//    public static Matrix blockDiag(Matrix A, Matrix B) {
+//        Matrix diag = new Matrix(A.getRowDimension() + B.getRowDimension(), A.getRowDimension() + B.getRowDimension());
+//        int indexBRow = 0;
+//        int indexBCol = 0;
+//
+//        for (int i = 0; i < A.getRowDimension(); i++) {
+//            for (int j = 0; j < A.getColumnDimension(); j++) {
+//                if (i == j) {
+//                    diag.set(i, j, A.get(i, j));
+//                } else {
+//                    diag.set(i, j, 0);
+//                }
+//
+//            }
+//        }
+//
+//        for (int i = A.getRowDimension(); i < diag.getRowDimension(); i++) {
+//
+//
+//            for (int j = A.getColumnDimension(); j < diag.getColumnDimension(); j++) {
+//                if (i == j) {
+//                    diag.set(i, j, B.get(indexBRow, indexBCol));
+//                    indexBCol++;
+//                    indexBRow++;
+//                }
+//
+//
+//            }
+//
+//        }
+//        return diag;
+//    }
 
     // * Copyright 2008 Josh Vermaas, except he's nice and instead prefers
     // * this to be licensed under the LGPL. Since the license itself is longer

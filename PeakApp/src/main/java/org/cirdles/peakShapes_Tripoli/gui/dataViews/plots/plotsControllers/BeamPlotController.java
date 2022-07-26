@@ -66,14 +66,14 @@ public class BeamPlotController {
         int leftBoundary = (int) BeamDataOutput.getLeftBoundary();
         int rightBoundary = (int) BeamDataOutput.getRightBoundary();
 
-        AbstractDataView histogramPlot = new BeamLinePlot(leftBoundary, rightBoundary, new Rectangle(scrollPane.getWidth(), scrollPane.getHeight()), linePlot);
+        AbstractDataView beamLinePlot = new BeamLinePlot(leftBoundary, rightBoundary, new Rectangle(scrollPane.getWidth(), scrollPane.getHeight()), linePlot);
 
         scrollPane.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (newValue.intValue() > 100) {
-                    histogramPlot.setMyWidth(newValue.intValue() - 15);
-                    histogramPlot.repaint();
+                    beamLinePlot.setMyWidth(newValue.intValue() - 15);
+                    beamLinePlot.repaint();
                 }
             }
         });
@@ -82,14 +82,14 @@ public class BeamPlotController {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (newValue.intValue() > 100) {
-                    histogramPlot.setMyHeight(newValue.intValue() - 15);
-                    histogramPlot.repaint();
+                    beamLinePlot.setMyHeight(newValue.intValue() - 15);
+                    beamLinePlot.repaint();
                 }
             }
         });
 
-        histogramPlot.preparePanel();
-        scrollPane.setContent(histogramPlot);
+        beamLinePlot.preparePanel();
+        scrollPane.setContent(beamLinePlot);
 
     }
 

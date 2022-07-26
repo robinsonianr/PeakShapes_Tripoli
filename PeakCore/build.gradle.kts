@@ -14,6 +14,8 @@ dependencies {
     // modernized update: https://github.com/topobyte/jama
     implementation("com.github.topobyte:jama:master-SNAPSHOT")
 
+    implementation("org.ojalgo:ojalgo:51.4.0")
+
     testImplementation("com.github.cirdles:commons:bc38781605")
 }
 

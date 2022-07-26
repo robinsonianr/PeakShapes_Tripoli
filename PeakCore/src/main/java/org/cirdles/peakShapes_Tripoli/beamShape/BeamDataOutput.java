@@ -8,6 +8,7 @@ import org.cirdles.peakShapes_Tripoli.matlab.MatLab;
 import org.cirdles.peakShapes_Tripoli.splineBasis.SplineBasisModel;
 import org.cirdles.peakShapes_Tripoli.visualizationUtilities.LinePlot;
 
+
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -118,7 +119,6 @@ public class BeamDataOutput {
         data.setMagnetMasses(new Matrix(trimMagnetMasses));
         data.setMeasPeakIntensity(new Matrix(trimPeakIntensity));
         massData = new Matrix(trimMagnetMasses).transpose().getArray()[0];
-
         intensityData = new Matrix(trimPeakIntensity).transpose().getArray()[0];
 
 
@@ -132,16 +132,20 @@ public class BeamDataOutput {
 
         // Smoothing spline
 //        double lambda = 1e-11;
-//        Matrix matrixD = new Matrix(MatLab.diff(MatLab.eye((int) (beamKnots + basisDegree)), orderDiff));
+//        int size = (int) (beamKnots + basisDegree);
+//        Matrix matrixD = MatLab.diff(Matrix.identity(size, size), orderDiff);
+//
 //        Matrix lambdaD = matrixD.times(Math.sqrt(lambda));
 //        Matrix gAugmented = MatLab.concatMatrix(GB, lambdaD);
-//        Matrix measAugmented = MatLab.concatMatrix(data.getMeasPeakIntensity(), new Matrix(MatLab.zeros((int) beamKnots + basisDegree - orderDiff, 1)));
-//        Matrix wtsAugmented = MatLab.blkDiag(WData, new Matrix(MatLab.eye((int) beamKnots + basisDegree - orderDiff)));
+//        int zeroSize = (int) beamKnots + basisDegree - orderDiff;
+//        Matrix measAugmented = MatLab.concatMatrix(data.getMeasPeakIntensity(), new Matrix(zeroSize, 1, 0));
+//        int eSize = (int) beamKnots + basisDegree - orderDiff;
+//        Matrix wtsAugmented = MatLab.blockDiag(WData, Matrix.identity(eSize, eSize));
 //        Matrix beamPSpline = gAugmented.transpose().times(wtsAugmented.times(gAugmented)).inverse().times(gAugmented.transpose().times(wtsAugmented.times(measAugmented)));
 //        Matrix test3 = new Matrix(wtsAugmented.chol().getL().getArray()).times(gAugmented);
 //        Matrix test4 = new Matrix(wtsAugmented.chol().getL().getArray()).times(measAugmented);
-        // does not compute on Ryan data file
-        //Matrix beamNNPspl = MatLab.solveNNLS(test3, test4);
+//         does not compute on Ryan data file
+//        Matrix beamNNPspl = MatLab.solveNNLS(test3, test4);
 
         // Determine peak width
         Matrix beamShape = Basis.times(BeamWNNLS);

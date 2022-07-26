@@ -55,18 +55,12 @@ public class DataModel {
         this.MassID = headerLine.get(2)[1];
         this.peakCenterMass = Double.parseDouble(headerLine.get(4)[1]);
         this.integPeriodMS = headerLine.get(10)[1].replaceFirst("ms", "");
-        double[][] magMasses = new double[masses.size()][1];
-        double[][] mPeakIntensity = new double[intensity.size()][1];
 
-        for (int i = 0; i < masses.size(); i++) {
-            magMasses[i][0] = masses.get(i);
-        }
-        for (int i = 0; i < intensity.size(); i++) {
-            mPeakIntensity[i][0] = intensity.get(i);
-        }
 
-        magnetMasses = new Matrix(magMasses);
-        measPeakIntensity = new Matrix(mPeakIntensity);
+        double[] magMasses = masses.stream().mapToDouble(d -> d).toArray();
+        magnetMasses = new Matrix(magMasses, magMasses.length);
+        double[] mPeakIntensity = intensity.stream().mapToDouble(d -> d).toArray();
+        measPeakIntensity = new Matrix(mPeakIntensity, mPeakIntensity.length);
 
 
     }
@@ -95,27 +89,27 @@ public class DataModel {
         return magnetMasses;
     }
 
-    public Matrix getMeasPeakIntensity() {
-        return measPeakIntensity;
-    }
-
-    public String getDetectorName() {
-        return detectorName;
-    }
-
-    public String getIntegPeriodMS() {
-        return integPeriodMS;
-    }
-
-    public String getMassID() {
-        return MassID;
-    }
-
     public void setMagnetMasses(Matrix magnetMasses) {
         this.magnetMasses = magnetMasses;
     }
 
+    public Matrix getMeasPeakIntensity() {
+        return measPeakIntensity;
+    }
+
     public void setMeasPeakIntensity(Matrix measPeakIntensity) {
         this.measPeakIntensity = measPeakIntensity;
+    }
+
+//    public String getDetectorName() {
+//        return detectorName;
+//    }
+//
+//    public String getIntegPeriodMS() {
+//        return integPeriodMS;
+//    }
+
+    public String getMassID() {
+        return MassID;
     }
 }

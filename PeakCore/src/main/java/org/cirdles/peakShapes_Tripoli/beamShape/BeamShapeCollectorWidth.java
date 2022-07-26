@@ -42,7 +42,7 @@ public class BeamShapeCollectorWidth {
         // Spline basis Basis
 
         int basisDegree = 3;
-        int orderDiff = 2;
+        //int orderDiff = 2;
         double beamKnots = Math.ceil(peakMeas.getBeamWindow() / peakMeas.getDeltaMagnetMass()) - (2 * basisDegree);
         int nInterp = 1000;
 
@@ -83,11 +83,9 @@ public class BeamShapeCollectorWidth {
         int newDataSet = 0;
         Matrix hasModelBeam = MatLab.any(gMatrix, 2);
         for (int i = 0; i < hasModelBeam.getRowDimension(); i++) {
-            for (int j = 0; j < hasModelBeam.getColumnDimension(); j++) {
                 if (hasModelBeam.get(i, 0) == 1) {
                     newDataSet++;
                 }
-            }
         }
 
         double[][] trimGMatrix = new double[newDataSet][gMatrix.getColumnDimension()];
@@ -126,7 +124,7 @@ public class BeamShapeCollectorWidth {
         // WLS and NNLS
         Matrix GB = TrimGMatrix.times(Basis);
         Matrix WData = MatLab.diag(MatLab.rDivide(MatLab.max(data.getMeasPeakIntensity(), 1), 1));
-        Matrix BeamWLS = (GB.transpose().times(WData.times(GB))).inverse().times((GB.transpose().times(WData.times(data.getMeasPeakIntensity()))));
+        // Matrix BeamWLS = (GB.transpose().times(WData.times(GB))).inverse().times((GB.transpose().times(WData.times(data.getMeasPeakIntensity()))));
         Matrix test1 = new Matrix(WData.chol().getL().getArray()).times(GB);
         Matrix test2 = new Matrix(WData.chol().getL().getArray()).times(data.getMeasPeakIntensity());
         Matrix BeamWNNLS = MatLab.solveNNLS(test1, test2);
@@ -176,25 +174,25 @@ public class BeamShapeCollectorWidth {
     }
 
 
-    public double getRightBoundary() {
-        return rightBoundary;
-    }
-
-    public double getLeftBoundary() {
-        return leftBoundary;
-    }
-
-    public Matrix getBeamShape() {
-        return beamShape;
-    }
-
-    public Matrix getBeamMassInterp() {
-        return beamMassInterp;
-    }
-
-    public Matrix getTrimGMatrix() {
-        return TrimGMatrix;
-    }
+//    public double getRightBoundary() {
+//        return rightBoundary;
+//    }
+//
+//    public double getLeftBoundary() {
+//        return leftBoundary;
+//    }
+//
+//    public Matrix getBeamShape() {
+//        return beamShape;
+//    }
+//
+//    public Matrix getBeamMassInterp() {
+//        return beamMassInterp;
+//    }
+//
+//    public Matrix getTrimGMatrix() {
+//        return TrimGMatrix;
+//    }
 
     public double getMeasBeamWidthMM() {
         return measBeamWidthMM;

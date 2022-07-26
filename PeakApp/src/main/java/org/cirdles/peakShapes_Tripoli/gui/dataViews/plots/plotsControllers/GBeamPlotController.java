@@ -66,14 +66,14 @@ public class GBeamPlotController {
         double[] massData = BeamDataOutput.getMassData();
         double[] intensityData = BeamDataOutput.getIntensityData();
 
-        AbstractDataView histogramPlot = new GBeamLinePlot(massData, intensityData, new Rectangle(scrollPane.getWidth(), scrollPane.getHeight()), linePlot);
+        AbstractDataView gBeamLinePlot = new GBeamLinePlot(massData, intensityData, new Rectangle(scrollPane.getWidth(), scrollPane.getHeight()), linePlot);
 
         scrollPane.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (newValue.intValue() > 100) {
-                    histogramPlot.setMyWidth(newValue.intValue() - 15);
-                    histogramPlot.repaint();
+                    gBeamLinePlot.setMyWidth(newValue.intValue() - 15);
+                    gBeamLinePlot.repaint();
                 }
             }
         });
@@ -82,14 +82,14 @@ public class GBeamPlotController {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (newValue.intValue() > 100) {
-                    histogramPlot.setMyHeight(newValue.intValue() - 15);
-                    histogramPlot.repaint();
+                    gBeamLinePlot.setMyHeight(newValue.intValue() - 15);
+                    gBeamLinePlot.repaint();
                 }
             }
         });
 
-        histogramPlot.preparePanel();
-        scrollPane.setContent(histogramPlot);
+        gBeamLinePlot.preparePanel();
+        scrollPane.setContent(gBeamLinePlot);
 
     }
 
