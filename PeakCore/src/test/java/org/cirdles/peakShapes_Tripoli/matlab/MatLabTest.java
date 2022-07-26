@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class MatLabTest {
 
@@ -18,17 +18,21 @@ class MatLabTest {
     }
 
     @Test
-    void find() {
+    void findTest() {
         Matrix A = new Matrix(new double[][]{{1, 2, 3}, {4, 5, 6}});
-        Matrix B = new Matrix(2, 2, 1);
-        double[][] anyMat = {{0, 0, 3}, {0, 0, 3}, {0, 0, 3}};
-        //double[][] found = MatLab.find(A, 4, "last");
-        Matrix any = MatLab.any(new Matrix(anyMat), 2);
-        Matrix testKron = MatLab.kron(A, B);
-        Boolean isNeg = MatLab.isAllNegative(new Matrix(5, 5, 0));
+        double[][] firstExpected = {{0.0}, {1.0}, {2.0}, {3.0}};
+        Matrix firstActual = MatLab.find(A, 4, "first"); // actual
+        double[][] lastExpected = {{5.0}, {4.0}, {3.0}, {2.0}};
+        Matrix lastActual = MatLab.find(A, 4, "last"); // actual
+
+        assertArrayEquals(firstActual.getArray(), firstExpected);
+        assertArrayEquals(lastActual.getArray(), lastExpected);
+
+    }
 
 
-        System.out.println(isNeg);
+    @Test
+    void kronTest() {
 
     }
 }
