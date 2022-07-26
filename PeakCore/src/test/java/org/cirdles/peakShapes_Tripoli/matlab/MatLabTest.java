@@ -5,7 +5,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MatLabTest {
 
@@ -25,8 +27,8 @@ class MatLabTest {
         double[][] lastExpected = {{5.0}, {4.0}, {3.0}, {2.0}};
         Matrix lastActual = MatLab.find(A, 4, "last"); // actual
 
-        assertArrayEquals(firstActual.getArray(), firstExpected);
-        assertArrayEquals(lastActual.getArray(), lastExpected);
+        assertTrue(Arrays.deepEquals(firstActual.getArray(), firstExpected));
+        assertTrue(Arrays.deepEquals(lastActual.getArray(), lastExpected));
 
     }
 
