@@ -32,7 +32,6 @@ public class LinePlot {
     }
 
 
-
     public double[] getyData() {
         return yData;
     }

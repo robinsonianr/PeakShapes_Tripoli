@@ -30,7 +30,7 @@ public class BeamShapeCollectorWidth {
         this.massSpec = massSpec;
         data.calcCollectorWidthAMU(massSpec);
         data.calcBeamWidthAMU(massSpec);
-        peakMeas = PeakMeas.initializePeakMeas(data, massSpec);
+        peakMeas = PeakMeas.initializePeakMeas(data);
 
 
     }
@@ -83,9 +83,9 @@ public class BeamShapeCollectorWidth {
         int newDataSet = 0;
         Matrix hasModelBeam = MatLab.any(gMatrix, 2);
         for (int i = 0; i < hasModelBeam.getRowDimension(); i++) {
-                if (hasModelBeam.get(i, 0) == 1) {
-                    newDataSet++;
-                }
+            if (hasModelBeam.get(i, 0) == 1) {
+                newDataSet++;
+            }
         }
 
         double[][] trimGMatrix = new double[newDataSet][gMatrix.getColumnDimension()];

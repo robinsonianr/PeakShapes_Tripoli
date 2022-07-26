@@ -61,7 +61,7 @@ public class MatLab {
     /**
      * Sets each element in matrix to the power deg
      *
-     * @param A Matrix
+     * @param A   Matrix
      * @param deg Degree exponent
      * @return A^deg
      */
@@ -83,7 +83,7 @@ public class MatLab {
     /**
      * Returns matrix of each element of matrix A by param divide
      *
-     * @param A Matrix
+     * @param A      Matrix
      * @param divide dividend
      * @return A/div
      */
@@ -171,7 +171,6 @@ public class MatLab {
 
     /**
      * Compares elements of matrix to number and determines if element is greater or equal to num
-     *
      *
      * @param mat Matrix
      * @param num number to be compared
@@ -271,7 +270,7 @@ public class MatLab {
     /**
      * Calculates the size of both the row or column size
      *
-     * @param A Matrix
+     * @param A   Matrix
      * @param num number compared
      * @return The size of the dimension in matrix A chosen by param num
      */
@@ -291,8 +290,8 @@ public class MatLab {
     /**
      * Generates a linearly spaced vector of n points of (max - min)/(points - 1)
      *
-     * @param min min value
-     * @param max max value
+     * @param min    min value
+     * @param max    max value
      * @param points number of points spaced between
      * @return A vector matrix of linearly spaced vector
      */
@@ -364,7 +363,7 @@ public class MatLab {
      * Determines if any array elements are nonzero. Returns elements along dimension dim. The dim input is a positive integer scalar.
      *
      * @param matrix Matrix matrix
-     * @param dim Dimension dim
+     * @param dim    Dimension dim
      */
     public static Matrix any(Matrix matrix, int dim) {
         int row = matrix.getRowDimension();
@@ -415,7 +414,7 @@ public class MatLab {
     /**
      * Divides param div by the elements in param A
      *
-     * @param A Matrix A
+     * @param A   Matrix A
      * @param div dividend div
      * @return div/A
      */
@@ -436,7 +435,7 @@ public class MatLab {
      * returns the maximum element along dimension dim.
      *
      * @param matrix Matrix matrix
-     * @param max comparable max
+     * @param max    comparable max
      * @return max > matrix
      */
     public static Matrix max(Matrix matrix, int max) {

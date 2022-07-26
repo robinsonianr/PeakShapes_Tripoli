@@ -8,7 +8,6 @@ import org.cirdles.peakShapes_Tripoli.matlab.MatLab;
 import org.cirdles.peakShapes_Tripoli.splineBasis.SplineBasisModel;
 import org.cirdles.peakShapes_Tripoli.visualizationUtilities.LinePlot;
 
-
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -25,12 +24,12 @@ public class BeamDataOutput {
         data.calcCollectorWidthAMU(massSpec);
         data.calcBeamWidthAMU(massSpec);
 
-        return gatherBeamWidth(massSpec, data, option);
+        return gatherBeamWidth(data, option);
     }
 
 
-    static LinePlot gatherBeamWidth(MassSpecModel massSpec, DataModel data, String option) {
-        PeakMeas peakMeas = PeakMeas.initializePeakMeas(data, massSpec);
+    static LinePlot gatherBeamWidth( DataModel data, String option) {
+        PeakMeas peakMeas = PeakMeas.initializePeakMeas(data);
         LinePlot linePlot = null;
 
         double maxBeam, maxBeamIndex, thesholdIntensity;
